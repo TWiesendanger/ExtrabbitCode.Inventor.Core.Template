@@ -1,0 +1,13 @@
+<Addin Type="Standard">
+	<ClassId>{d6b86a56-4b70-4028-8179-108b910edadd}</ClassId>
+	<ClientId>{d6b86a56-4b70-4028-8179-108b910edadd}</ClientId>
+	<DisplayName>Inventor.Core.Template</DisplayName>
+	<Description>ExtrabbitCode.Description</Description>
+	<Assembly>InstallFolder\Inventor.Core.Template.dll</Assembly>
+	<LoadOnStartUp>0</LoadOnStartUp>
+	<UserUnloadable>1</UserUnloadable>
+	<Hidden>0</Hidden>
+	<SupportedSoftwareVersionGreaterThan>28..</SupportedSoftwareVersionGreaterThan>
+	<DataVersion>1</DataVersion>
+	<UserInterfaceVersion>1</UserInterfaceVersion>
+</Addin>

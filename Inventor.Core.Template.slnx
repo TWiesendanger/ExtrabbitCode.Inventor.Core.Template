@@ -1,0 +1,14 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="scripts/Update-InvAddinTemplate.ps1" />
+  </Folder>
+  <Project Path="Inventor.Core.Template/ExtrabbitCode.Inventor.Core.Template.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="TemplatePack/TemplatePack.csproj" Id="8b457c4e-825f-4fc5-a160-1b0e1599db01" />
+</Solution>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<PackageId>ExtrabbitCode.Inventor.Core.Template</PackageId>
+		<TargetFramework>net8.0</TargetFramework>
+		<Version>1.0.1</Version>
+		<Authors>ExtrabbitCode</Authors>
+		<PackageType>Template</PackageType>
+		<IncludeContentInPack>true</IncludeContentInPack>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<Description>Autodesk Inventor Add‑in Template</Description>
+		<PackageOutputPath>$(MSBuildThisFileDirectory)..\.nupkgs</PackageOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="..\Inventor.Core.Template\**\*" PackagePath="..\Inventor.Core.Template\" Exclude="..\Inventor.Core.Template\bin\**;&#xD;&#xA;                      ..\Inventor.Core.Template\obj\**;&#xD;&#xA;                      *.user;*.suo;*.nupkg" />
+	</ItemGroup>
+</Project>

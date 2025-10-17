@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<OutputType>Library</OutputType>
+		<RootNamespace>ExtrabbitCode.Inventor.Core.Template</RootNamespace>
+		<AssemblyName>ExtrabbitCode.Inventor.Core.Template</AssemblyName>
+		<InventorVersion>$(InventorVersion)</InventorVersion>
+		<CopyInventorFiles>$(CopyInventorFiles)</CopyInventorFiles>
+		<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
+		<Platforms>x64</Platforms>
+		<!--#if (ui == "wpf")-->
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>false</UseWindowsForms>
+		<!--#elseif (ui == "winforms")-->
+		<UseWPF>false</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<!--#endif-->
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="**\*" Pack="true" PackagePath="content\"
+		         Exclude="bin\**;obj\**;.vs\**;*.user;*.suo;*.nupkg" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Autodesk.Inventor.Sdk" Version="1.0.3" />
+		<PackageReference Include="log4net" Version="3.2.0" />
+	</ItemGroup>
+
+</Project>

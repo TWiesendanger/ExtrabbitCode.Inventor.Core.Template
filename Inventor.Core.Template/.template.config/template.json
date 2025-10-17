@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "description": "Autodesk Inventor addin template",
+  "author": "ExtrabbitCode Tobias Wiesendanger",
+  "classifications": [ "InventorAddin", "Inventor", "Library" ],
+  "name": "ExtrabbitCode Inventor addin",
+  "identity": "invAddinCore",
+  "shortName": "invAddinCore",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "ExtrabbitCode.Inventor.Core.Template",
+  "preferNameDirectory": true,
+  "guids": [ "d6b86a56-4b70-4028-8179-108b910edadd" ],
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [
+            ".vs/**"
+          ]
+        }
+      ]
+    }
+  ],
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "description": "The target framework for the project.",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "net8.0-windows",
+          "description": "Target net8.0-windows"
+        },
+        {
+          "choice": "net9.0-windows",
+          "description": "Target net9.0-windows"
+        }
+      ],
+      "replaces": "net8.0-windows",
+      "defaultValue": "net8.0-windows"
+    },
+    "addinDescription": {
+      "displayName": "Addin Description",
+      "type": "parameter",
+      "defaultValue": "ExtrabbitCode.Description",
+      "replaces": "ExtrabbitCode.Description",
+      "datatype": "text",
+      "description": "Description text used for addin."
+    },
+    "InstallFolder": {
+      "type": "parameter",
+      "datatype": "string",
+      "defaultValue": "C:\\ProgramFiles\\Inventor.Core.Template\\",
+      "replaces": "InstallFolder",
+      "description": "Defines where the addin will be installed. This is used in the build post event.",
+      "isRequired": true
+    },
+    "ui": {
+      "type": "parameter",
+      "displayName": "UI Framework",
+      "datatype": "choice",
+      "description": "Choose a UI framework for dialogs.",
+      "choices": [
+        {
+          "choice": "wpf",
+          "description": "Use Windows Presentation Foundation (WPF)"
+        },
+        {
+          "choice": "winforms",
+          "description": "Use Windows Forms"
+        },
+        {
+          "choice": "wpfui",
+          "description": "Use Windows Forms"
+        }
+      ],
+      "defaultValue": "wpfui"
+    },
+    "UseWindowsForms": {
+      "type": "computed",
+      "value": "(ui == \"winforms\" ? \"true\" : \"false\")"
+    },
+    "UseWPF": {
+      "type": "computed",
+      "value": "(ui == \"wpf\" ? \"true\" : \"false\")"
+    }
+  }
+}
