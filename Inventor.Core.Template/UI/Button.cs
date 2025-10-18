@@ -1,8 +1,14 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
-using ExtrabbitCode.Inventor.Core.Template.Helper;
+﻿using ExtrabbitCode.Inventor.Core.Template.Helper;
 using ExtrabbitCode.Inventor.Core.Template.UI.Dialog;
+using System;
+using System.Runtime.CompilerServices;
+//#if (ui == "wpfui")
+using ExtrabbitCode.Inventor.Core.Template.Models;
+using System.Windows;
+using Wpf.Ui.Appearance;
+//#endif
+using System.Windows.Forms;
+
 
 namespace ExtrabbitCode.Inventor.Core.Template.UI;
 
@@ -36,14 +42,32 @@ public class UiButton
         switch (Bd.InternalName)
         {
             case "InventorTemplateDefaultButton":
-                MessageBox.Show(@"Default message.", @"Default title");
+                System.Windows.Forms.MessageBox.Show(@"Default message.", @"Default title");
                 return;
             case "InventorTemplateInfo":
-                var infoDlg = new FrmInfo();
+                //#if (ui == "wpfui")
+                InfoDialog infoDialog = new InfoDialog();
+                SetDialogTheme(infoDialog);
+                infoDialog.ShowDialog();
+                return;
+                //#elif (ui == "winforms")
+                FrmInfo infoDlg = new FrmInfo();
                 infoDlg.ShowDialog(new WindowWrapper((IntPtr)Globals.InvApp.MainFrameHWND));
+                //#endif
+
                 return;
             default:
                 return;
         }
+    }
+
+    private static void SetDialogTheme(Window dialog)
+    {
+        var theme = Globals.ActiveTheme != null && Globals.ActiveTheme.Name == InventorThemeConstants.LightTheme
+            ? ApplicationTheme.Light
+            : ApplicationTheme.Dark;
+
+        ApplicationThemeManager.Apply(dialog);
+        ApplicationThemeManager.Apply(theme);
     }
 }

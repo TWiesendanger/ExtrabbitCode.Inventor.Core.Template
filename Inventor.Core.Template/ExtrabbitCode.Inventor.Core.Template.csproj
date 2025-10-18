@@ -8,24 +8,87 @@
 		<CopyInventorFiles>$(CopyInventorFiles)</CopyInventorFiles>
 		<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
 		<Platforms>x64</Platforms>
-		<!--#if (ui == "wpf")-->
-		<UseWPF>true</UseWPF>
-		<UseWindowsForms>false</UseWindowsForms>
-		<!--#elseif (ui == "winforms")-->
+		<!--#if (ui == "winforms")-->
 		<UseWPF>false</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
+		<!--#elseif (ui == "wpfui")-->
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<!--#endif-->
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="**\*" Pack="true" PackagePath="content\"
-		         Exclude="bin\**;obj\**;.vs\**;*.user;*.suo;*.nupkg" />
+		<Content Include="**\*" Pack="true" PackagePath="content\" Exclude="bin\**;obj\**;.vs\**;*.user;*.suo;*.nupkg;*.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="UI\Dialog\InfoDialog.xaml.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="Models\InventorThemeConstants.cs" />
+	  <Content Remove="Resources\appIcon.png" />
+	  <Content Remove="UI\ButtonResources\DefaultButton\16x16DarkTheme.png" />
+	  <Content Remove="UI\ButtonResources\DefaultButton\16x16LightTheme.png" />
+	  <Content Remove="UI\ButtonResources\DefaultButton\32x32DarkTheme.png" />
+	  <Content Remove="UI\ButtonResources\DefaultButton\32x32LightTheme.png" />
+	  <Content Remove="UI\ButtonResources\Info\16x16DarkTheme.png" />
+	  <Content Remove="UI\ButtonResources\Info\16x16LightTheme.png" />
+	  <Content Remove="UI\ButtonResources\Info\32x32DarkTheme.png" />
+	  <Content Remove="UI\ButtonResources\Info\32x32LightTheme.png" />
+	  <Content Remove="UI\Dialog\InfoDialog.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="UI\Dialog\InfoDialog.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Autodesk.Inventor.Sdk" Version="1.0.3" />
 		<PackageReference Include="log4net" Version="3.2.0" />
+		<!--#if (ui == "wpfui")-->
+		<PackageReference Include="WPF-UI" Version="3.0.5" />
+		<!--#endif-->
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\appIcon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="UI\ButtonResources\DefaultButton\16x16DarkTheme.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="UI\ButtonResources\DefaultButton\16x16LightTheme.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="UI\ButtonResources\DefaultButton\32x32DarkTheme.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="UI\ButtonResources\DefaultButton\32x32LightTheme.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="UI\ButtonResources\Info\16x16DarkTheme.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="UI\ButtonResources\Info\16x16LightTheme.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="UI\ButtonResources\Info\32x32DarkTheme.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="UI\ButtonResources\Info\32x32LightTheme.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+	
+			<Target Name="CustomBuild" AfterTargets="Build">
+		<Exec Command="&quot;$(ProjectDir)BuildScript.cmd&quot; &quot;$(ProjectDir)&quot; $(TargetName) &quot;$(TargetPath)&quot; &quot;$(TargetDir)&quot;" />
+	</Target>
+
+
+
 
 </Project>

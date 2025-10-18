@@ -17,9 +17,18 @@
     {
       "modifiers": [
         {
-          "exclude": [
-            ".vs/**"
-          ]
+          "condition": "(ui == 'wpf')",
+          "include": [ "UI/Dialog/**/*.xaml", "UI/Dialog/**/*.xaml.cs" ],
+          "exclude": [ "UI/Dialog/frmInfo.cs", "Helper/WindowWrapper.cs" ]
+        },
+        {
+          "condition": "(ui == 'winforms')",
+          "exclude": [ "UI/Dialog/**/*.xaml", "UI/Dialog/**/*.xaml.cs" ],
+          "include": [ "UI/Dialog/frmInfo.cs", "Helper/WindowWrapper.cs" ]
+        },
+        {
+          "exclude": [ ".vs/**", "bin/**", "obj/**" ],
+          "include": [ "Directory.Build.props" ]
         }
       ]
     }
@@ -42,6 +51,14 @@
       "replaces": "net8.0-windows",
       "defaultValue": "net8.0-windows"
     },
+    "inventorVersion": {
+      "displayName": "Inventor Version",
+      "type": "parameter",
+      "defaultValue": "2026",
+      "replaces": "2026",
+      "datatype": "text",
+      "description": "Lowest Inventor version used for addin."
+    },
     "addinDescription": {
       "displayName": "Addin Description",
       "type": "parameter",
@@ -53,8 +70,8 @@
     "InstallFolder": {
       "type": "parameter",
       "datatype": "string",
-      "defaultValue": "C:\\ProgramFiles\\Inventor.Core.Template\\",
-      "replaces": "InstallFolder",
+      "defaultValue": "C:\\ProgramData\\Inventor.Core.Template",
+      "replaces": "ExtrabbitCode.InstallFolder",
       "description": "Defines where the addin will be installed. This is used in the build post event.",
       "isRequired": true
     },
@@ -65,10 +82,6 @@
       "description": "Choose a UI framework for dialogs.",
       "choices": [
         {
-          "choice": "wpf",
-          "description": "Use Windows Presentation Foundation (WPF)"
-        },
-        {
           "choice": "winforms",
           "description": "Use Windows Forms"
         },
@@ -78,14 +91,20 @@
         }
       ],
       "defaultValue": "wpfui"
-    },
-    "UseWindowsForms": {
-      "type": "computed",
-      "value": "(ui == \"winforms\" ? \"true\" : \"false\")"
-    },
-    "UseWPF": {
-      "type": "computed",
-      "value": "(ui == \"wpf\" ? \"true\" : \"false\")"
     }
-  }
+  },
+  "primaryOutputs": [
+    { "path": "README.md" }
+  ],
+  "postActions": [
+    {
+      "description": "Opens README.md in the editor",
+      "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
+      "args": {
+        "files": "0" // 0 = first file in primaryOutputs
+      },
+      "manualInstructions": [],
+      "continueOnError": true
+    }
+  ]
 }

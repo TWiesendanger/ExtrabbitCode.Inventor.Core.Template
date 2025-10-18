@@ -32,9 +32,11 @@ public class UiDefinitionHelper
         if (testDef != null)
         {
             MessageBox.Show(
-                @"Error when loading the add-in ""VoxelAssemblerMPCMaker"". A command already exists with the same internal name. Each add-in must have a unique internal name. Change the internal name in the call to CreateButtonDefinition.",
+                @"Error when loading the add-in ""VoxelAssemblerMPCMaker"". " +
+                @"A command already exists with the same internal name. " +
+                @"Each add-in must have a unique internal name. " +
+                @"Change the internal name in the call to CreateButtonDefinition.",
                 @"CSharp Inventor Add-In Template");
-            return null;
         }
 
         iconFolder = GetIconFolder(iconFolder);

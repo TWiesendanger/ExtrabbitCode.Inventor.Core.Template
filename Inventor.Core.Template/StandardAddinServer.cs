@@ -4,8 +4,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using ExtrabbitCode.Inventor.Core.Template.UI;
 
-//#if (ui == "wpf")
+//#if (ui == "wpfui")
 using System.Windows;
+using System.Windows.Forms;
 //#elif (ui == "winforms")
 using System.Windows.Forms;
 //#endif
@@ -81,7 +82,11 @@ public class StandardAddInServer : ApplicationAddInServer
         }
         catch (Exception ex)
         {
-            MessageBox.Show(@"Unexpected failure in the activation of the add-in ""InventorTemplate""" + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
+            //#if (ui == "wpfui")
+            System.Windows.MessageBox.Show(@"Unexpected failure in the activation of the add-in ""InventorTemplate""" + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
+            //#elif (ui == "winforms")
+            System.Windows.Forms.MessageBox.Show(@"Unexpected failure in the activation of the add-in ""InventorTemplate""" + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
+            //#endif
         }
     }
 
@@ -180,10 +185,10 @@ public class StandardAddInServer : ApplicationAddInServer
         var iamRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Assembly"];
         var ipnRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Presentation"];
 
-        var tabIdw = UiDefinitionHelper.SetupTab("InventorTemplate", "InventorTemplate", idwRibbon);
-        var tabIpt = UiDefinitionHelper.SetupTab("InventorTemplate", "InventorTemplate", iptRibbon);
-        var tabIam = UiDefinitionHelper.SetupTab("InventorTemplate", "InventorTemplate", iamRibbon);
-        var tabIpn = UiDefinitionHelper.SetupTab("InventorTemplate", "InventorTemplate", ipnRibbon);
+        var tabIdw = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", idwRibbon);
+        var tabIpt = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", iptRibbon);
+        var tabIam = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", iamRibbon);
+        var tabIpn = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", ipnRibbon);
         _ribbonTabs.Add(tabIdw);
         _ribbonTabs.Add(tabIpt);
         _ribbonTabs.Add(tabIam);

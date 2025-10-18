@@ -15,4 +15,8 @@
 	<ItemGroup>
 		<Content Include="..\Inventor.Core.Template\**\*" PackagePath="..\Inventor.Core.Template\" Exclude="..\Inventor.Core.Template\bin\**;&#xD;&#xA;                      ..\Inventor.Core.Template\obj\**;&#xD;&#xA;                      *.user;*.suo;*.nupkg" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="..\Inventor.Core.Template\ExtrabbitCode.Inventor.Core.Template.csproj.user" />
+	</ItemGroup>
 </Project>
