@@ -29,6 +29,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="ExtrabbitCode.InstallFolder\**" />
+	  <Content Remove="ExtrabbitCode.InstallFolder\**" />
+	  <EmbeddedResource Remove="ExtrabbitCode.InstallFolder\**" />
+	  <None Remove="ExtrabbitCode.InstallFolder\**" />
+	  <Page Remove="ExtrabbitCode.InstallFolder\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Content Remove="UI\Dialog\InfoDialog.xaml" />
 	  <Content Remove="UI\Dialog\InfoDialog.xaml.cs" />
 	</ItemGroup>

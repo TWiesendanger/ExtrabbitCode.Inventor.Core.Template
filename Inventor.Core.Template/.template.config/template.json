@@ -2,7 +2,7 @@
   "$schema": "http://json.schemastore.org/template",
   "description": "Autodesk Inventor addin template",
   "author": "ExtrabbitCode Tobias Wiesendanger",
-  "classifications": [ "InventorAddin", "Inventor", "Library" ],
+  "classifications": [ "InventorAddin", "Inventor", "Library", "Autodesk" ],
   "name": "ExtrabbitCode Inventor addin",
   "identity": "invAddinCore",
   "shortName": "invAddinCore",
@@ -94,7 +94,7 @@
     "InstallFolder": {
       "type": "parameter",
       "datatype": "string",
-      "defaultValue": "C:\\ProgramData\\Inventor.Core.Template",
+      "defaultValue": "C:\\ProgramData",
       "replaces": "ExtrabbitCode.InstallFolder",
       "description": "Defines where the addin will be installed. This is used in the build post event.",
       "isRequired": true
