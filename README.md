@@ -28,6 +28,8 @@
 
 # Introduction
 
+![alt text](inventor.png)
+
 If you ever copied multiple things from other addins over and over again, then you will like this template. The idea is to provide a template that already includes alot of standard features that every addin needs. If you want to there is nothing to change at all. You could use a generated addin from this template right out of the box. Things like guids are already generated. There is also a build script to automatically deploy it to a predefined folder.
 
 This template is based on the ***dotnet templating.*** See [Templating](https://docs.microsoft.com/en-us/dotnet/core/tools/custom-templates)
@@ -69,6 +71,8 @@ The following options are currently possible:
 - Installer Type: Inno Setup / Wix
 
 ### Use with User Interface
+
+After installing the template TODO
 
 ![image](UiDemo.png)
 
@@ -143,6 +147,8 @@ and then use it like this:
 ```
 
 For further customization you can look into the `log4net.config` file. By default the log file will be created inside of the addin folder.
+
+TODO WHERE IS THE LOGFILE NORMALLY STORED
 
 ## Add a new button / command
 
@@ -278,6 +284,8 @@ Edit the sample script to your liking. At least the header needs some modificati
 
 Also make sure to change the license.txt file if you dont plan to release your addin with a GNU license.
 
+> Before running make sure to create a release build of your addin. The installer script looks for the files inside of the release folder.
+
 ### Wix
 
 ## Build script
@@ -305,7 +313,7 @@ To change the inventor version, you need to edit the project file. Look for `<In
 
 ### Use iLogic
 
-To use iLogic dll's, you need to edit the project file. You can add ` <UseILogic>true</UseILogic>`.
+To use iLogic dll's, you need to edit the project file. You can add `<UseILogic>true</UseILogic>`.
 
 ## Analyzer
 
