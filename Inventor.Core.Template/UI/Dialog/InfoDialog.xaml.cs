@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using ExtrabbitCode.Inventor.Core.Template.UI.ViewModels;
@@ -13,10 +14,10 @@ public partial class InfoDialog
         InitializeComponent();
         DataContext = new InfoDialogViewModel();
 
-        var windowInteropHelper = new WindowInteropHelper(this)
-        {
-            Owner = new IntPtr(Globals.InvApp.MainFrameHWND)
-        };
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+        IntPtr ownerHandle = new(Globals.InvApp.MainFrameHWND);
+        new WindowInteropHelper(this).Owner = ownerHandle;
 
 
         ApplicationThemeManager.Apply(this);

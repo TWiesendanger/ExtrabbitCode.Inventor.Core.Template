@@ -1,22 +1,23 @@
 ﻿using ExtrabbitCode.Inventor.Core.Template.Helper;
+//#if (ui == "wpfui")
+using ExtrabbitCode.Inventor.Core.Template.Models;
 using ExtrabbitCode.Inventor.Core.Template.UI.Dialog;
 using System;
 using System.Runtime.CompilerServices;
-//#if (ui == "wpfui")
-using ExtrabbitCode.Inventor.Core.Template.Models;
 using System.Windows;
-using Wpf.Ui.Appearance;
 //#endif
-using System.Windows.Forms;
+using log4net;
+using Wpf.Ui.Appearance;
 
 
 namespace ExtrabbitCode.Inventor.Core.Template.UI;
 
 public class UiButton
 {
-    private ButtonDefinition _bd;
+    private ButtonDefinition? _bd;
+    private static readonly ILog Logger = LogManagerAddin.GetLogger(typeof(UiButton));
 
-    public ButtonDefinition Bd
+    public ButtonDefinition? Bd
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
         get => _bd;
@@ -39,22 +40,30 @@ public class UiButton
 
     private void ButtonOnExecute(NameValueMap context)
     {
+        if (Bd is null)
+        {
+            Logger.Error("ButtonOnExecute invoked, but Bd is null.");
+            return;
+        }
+
         switch (Bd.InternalName)
         {
-            case "InventorTemplateDefaultButton":
+            case "ExtrabbitCode.Inventor.Core.Template.DefaultButton":
+                Logger.Debug("Default Button was pressed.");
                 System.Windows.Forms.MessageBox.Show(@"Default message.", @"Default title");
                 return;
-            case "InventorTemplateInfo":
+            case "ExtrabbitCode.Inventor.Core.Template.Info":
+                Logger.Info("Templatebutton pressed");
                 //#if (ui == "wpfui")
-                InfoDialog infoDialog = new InfoDialog();
+                InfoDialog infoDialog = new();
                 SetDialogTheme(infoDialog);
                 infoDialog.ShowDialog();
-                return;
                 //#elif (ui == "winforms")
-                FrmInfo infoDlg = new FrmInfo();
-                infoDlg.ShowDialog(new WindowWrapper((IntPtr)Globals.InvApp.MainFrameHWND));
+                using (FrmInfo infoDlg = new())
+                {
+                    infoDlg.ShowDialog(new WindowWrapper((IntPtr) Globals.InvApp.MainFrameHWND));
+                }
                 //#endif
-
                 return;
             default:
                 return;
@@ -63,7 +72,7 @@ public class UiButton
 
     private static void SetDialogTheme(Window dialog)
     {
-        var theme = Globals.ActiveTheme != null && Globals.ActiveTheme.Name == InventorThemeConstants.LightTheme
+        ApplicationTheme theme = Globals.ActiveTheme.Name == InventorThemeConstants.LightTheme
             ? ApplicationTheme.Light
             : ApplicationTheme.Dark;
 

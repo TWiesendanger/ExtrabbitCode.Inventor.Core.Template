@@ -8,6 +8,11 @@
 		<CopyInventorFiles>$(CopyInventorFiles)</CopyInventorFiles>
 		<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
 		<Platforms>x64</Platforms>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<Nullable>enable</Nullable>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<!--#if (ui == "winforms")-->
 		<UseWPF>false</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
@@ -24,71 +29,62 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Remove="UI\Dialog\InfoDialog.xaml.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Remove="Models\InventorThemeConstants.cs" />
-	  <Content Remove="Resources\appIcon.png" />
-	  <Content Remove="UI\ButtonResources\DefaultButton\16x16DarkTheme.png" />
-	  <Content Remove="UI\ButtonResources\DefaultButton\16x16LightTheme.png" />
-	  <Content Remove="UI\ButtonResources\DefaultButton\32x32DarkTheme.png" />
-	  <Content Remove="UI\ButtonResources\DefaultButton\32x32LightTheme.png" />
-	  <Content Remove="UI\ButtonResources\Info\16x16DarkTheme.png" />
-	  <Content Remove="UI\ButtonResources\Info\16x16LightTheme.png" />
-	  <Content Remove="UI\ButtonResources\Info\32x32DarkTheme.png" />
-	  <Content Remove="UI\ButtonResources\Info\32x32LightTheme.png" />
 	  <Content Remove="UI\Dialog\InfoDialog.xaml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Remove="UI\Dialog\InfoDialog.xaml" />
+	  <Content Remove="UI\Dialog\InfoDialog.xaml.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Autodesk.Inventor.Sdk" Version="1.0.3" />
 		<PackageReference Include="log4net" Version="3.2.0" />
 		<!--#if (ui == "wpfui")-->
-		<PackageReference Include="WPF-UI" Version="3.0.5" />
+		<PackageReference Include="WPF-UI" Version="4.0.3" />
 		<!--#endif-->
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="Resources\appIcon.png" />
+		<Resource Include="Resources\appIcon.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="UI\ButtonResources\DefaultButton\16x16DarkTheme.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="UI\ButtonResources\DefaultButton\16x16LightTheme.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="UI\ButtonResources\DefaultButton\32x32DarkTheme.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="UI\ButtonResources\DefaultButton\32x32LightTheme.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="UI\ButtonResources\Info\16x16DarkTheme.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="UI\ButtonResources\Info\16x16LightTheme.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="UI\ButtonResources\Info\32x32DarkTheme.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="UI\ButtonResources\Info\32x32LightTheme.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+		<Content Update="log4net.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Resources\appIcon.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Update="Resources\versionhistory.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
-	
-			<Target Name="CustomBuild" AfterTargets="Build">
+
+	<ItemGroup>
+		<None Update="UI\ButtonResources\DefaultButton\16x16DarkTheme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="UI\ButtonResources\DefaultButton\16x16LightTheme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="UI\ButtonResources\DefaultButton\32x32DarkTheme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="UI\ButtonResources\DefaultButton\32x32LightTheme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="UI\ButtonResources\Info\16x16DarkTheme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="UI\ButtonResources\Info\16x16LightTheme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="UI\ButtonResources\Info\32x32DarkTheme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="UI\ButtonResources\Info\32x32LightTheme.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="CustomBuild" AfterTargets="Build">
 		<Exec Command="&quot;$(ProjectDir)BuildScript.cmd&quot; &quot;$(ProjectDir)&quot; $(TargetName) &quot;$(TargetPath)&quot; &quot;$(TargetDir)&quot;" />
 	</Target>
-
-
-
-
 </Project>

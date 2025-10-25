@@ -10,6 +10,7 @@
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<Description>Autodesk Inventor Add‑in Template</Description>
 		<PackageOutputPath>$(MSBuildThisFileDirectory)..\.nupkgs</PackageOutputPath>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -18,5 +19,9 @@
 
 	<ItemGroup>
 	  <Content Remove="..\Inventor.Core.Template\ExtrabbitCode.Inventor.Core.Template.csproj.user" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\.editorconfig" Link=".editorconfig" />
 	</ItemGroup>
 </Project>

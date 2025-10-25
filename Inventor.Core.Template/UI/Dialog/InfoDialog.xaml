@@ -20,7 +20,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <ui:TitleBar
-            Title="Info MuM.VoxelAssembler"
+            Title="Info ExtrabbitCode.Inventor.Core.Template"
             Grid.Row="0"
             Margin="-10,0,0,0"
             CanMaximize="False"

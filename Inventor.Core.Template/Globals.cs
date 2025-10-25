@@ -1,13 +1,30 @@
-﻿namespace ExtrabbitCode.Inventor.Core.Template;
+﻿using System;
+
+namespace ExtrabbitCode.Inventor.Core.Template;
 
 public static class Globals
 {
-    /// <summary>Holds a reference to the app (inventor)</summary>
-    public static Application InvApp;
-    /// <summary>Holds a reference to the addin.</summary>
-    public static ApplicationAddInSite InvApplicationAddInSite;
-    /// <summary>This is the guid used through the whole addin. This was generated during the creation of the addin. Make sure it is unique. There cannot be another addin having the same guid.</summary>
+    private static Application? _invApp;
+    private static ApplicationAddInSite? _invApplicationAddInSite;
+    private static Theme? _activeTheme;
+
     public const string AddInClientId = "d6b86a56-4b70-4028-8179-108b910edadd";
-    /// <summary>Holds a reference to the active app them. Can be dark theme or light theme.</summary>
-    public static Theme ActiveTheme;
+
+    /// <summary>Holds a reference to the Inventor application instance.</summary>
+    public static Application InvApp {
+        get => _invApp ?? throw new InvalidOperationException("Inventor application not initialized.");
+        internal set => _invApp = value;
+    }
+
+    /// <summary>Holds a reference to the add‑in site object.</summary>
+    public static ApplicationAddInSite InvApplicationAddInSite {
+        get => _invApplicationAddInSite ?? throw new InvalidOperationException("Add‑in site not initialized.");
+        internal set => _invApplicationAddInSite = value;
+    }
+
+    /// <summary>Holds a reference to the active Inventor theme (light or dark).</summary>
+    public static Theme ActiveTheme {
+        get => _activeTheme ?? throw new InvalidOperationException("Active theme not initialized.");
+        internal set => _activeTheme = value;
+    }
 }

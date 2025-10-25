@@ -1,15 +1,15 @@
-﻿using System;
+﻿using ExtrabbitCode.Inventor.Core.Template.UI;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using ExtrabbitCode.Inventor.Core.Template.UI;
+using ExtrabbitCode.Inventor.Core.Template.Helper;
+using ExtrabbitCode.Inventor.Core.Template.Models;
+using log4net;
 
-//#if (ui == "wpfui")
-using System.Windows;
-using System.Windows.Forms;
-//#elif (ui == "winforms")
-using System.Windows.Forms;
-//#endif
+// #if (ui == "wpfui")
+using Wpf.Ui.Appearance;
+// #endif
 
 namespace ExtrabbitCode.Inventor.Core.Template;
 
@@ -17,18 +17,20 @@ namespace ExtrabbitCode.Inventor.Core.Template;
 [Guid(Globals.AddInClientId)]
 public class StandardAddInServer : ApplicationAddInServer
 {
-    private UserInterfaceEvents _uiEvents;
+    private UserInterfaceEvents? _uiEvents;
     private List<RibbonPanel> _ribbonPanels = [];
     private List<RibbonTab> _ribbonTabs = [];
     private List<CommandControl> _buttons = [];
     private List<ButtonDefinition> _buttonDefinitions = [];
 
-    public static ApplicationEvents InvAppEvents{ get; set; }
+    public static ApplicationEvents? InvAppEvents{ get; set; }
 
-    private ButtonDefinition _defaultButton;
-    private ButtonDefinition _info;
+    private ButtonDefinition? _defaultButton;
+    private ButtonDefinition? _info;
 
-    public UserInterfaceEvents UiEvents
+    private static readonly ILog Logger = LogManagerAddin.GetLogger(typeof(StandardAddInServer));
+
+    public UserInterfaceEvents? UiEvents
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
         get => _uiEvents;
@@ -54,12 +56,16 @@ public class StandardAddInServer : ApplicationAddInServer
     /// </summary>
     /// <param name="addInSiteObject">The add in site object.</param>
     /// <param name="firstTime">if set to <c>true</c> [first time].</param>
+    // ReSharper disable once CA1725
+#pragma warning disable CA1725 // Parameter names should match base declaration
     public void Activate(ApplicationAddInSite addInSiteObject, bool firstTime)
+#pragma warning restore CA1725 // Parameter names should match base declaration
     {
+        ArgumentNullException.ThrowIfNull(addInSiteObject);
 
         try
         {
-            //logger.Debug("Addin InventorTemplate Activated");
+            Logger.Debug("Addin InventorTemplate Activated");
 
             Globals.InvApp = addInSiteObject.Application;
             Globals.InvApplicationAddInSite = addInSiteObject;
@@ -67,26 +73,36 @@ public class StandardAddInServer : ApplicationAddInServer
             InvAppEvents = Globals.InvApp.ApplicationEvents;
             InvAppEvents.OnApplicationOptionChange += InvAppEvents_OnApplicationOptionChange;
 
-            var themeManager = Globals.InvApp.ThemeManager;
+            ThemeManager themeManager = Globals.InvApp.ThemeManager;
             Globals.ActiveTheme = themeManager.ActiveTheme;
-            var theme = Globals.ActiveTheme.Name;
-            //logger.Debug("Inventor ThemeManager ActiveTheme: " + theme);
+            string themeName = Globals.ActiveTheme.Name;
+            Logger.Debug("Inventor ThemeManager ActiveTheme: " + themeName);
 
-            _info = UiDefinitionHelper.CreateButton("Info", "InventorTemplateInfo", @"UI\ButtonResources\Info", theme);
-            _defaultButton = UiDefinitionHelper.CreateButton("DefaultButton", "InventorTemplateDefaultButton", @"UI\ButtonResources\DefaultButton", theme);
+            // #if (ui == "wpfui")
+            ApplicationTheme appTheme = themeName == InventorThemeConstants.LightTheme
+                ? ApplicationTheme.Light
+                : ApplicationTheme.Dark;
+
+            // Force initialize Wpf.Ui before any dialog opens
+            ApplicationThemeManager.Apply(appTheme);
+            // #endif
+
+            _info = UiDefinitionHelper.CreateButton("Info", "ExtrabbitCode.Inventor.Core.Template.Info", @"UI\ButtonResources\Info", themeName);
+            _defaultButton = UiDefinitionHelper.CreateButton("DefaultButton", "ExtrabbitCode.Inventor.Core.Template.DefaultButton", @"UI\ButtonResources\DefaultButton", themeName);
             _buttonDefinitions.Add(_info);
             _buttonDefinitions.Add(_defaultButton);
 
             if (firstTime)
+            {
                 AddToUserInterface();
+            }
         }
         catch (Exception ex)
         {
-            //#if (ui == "wpfui")
-            System.Windows.MessageBox.Show(@"Unexpected failure in the activation of the add-in ""InventorTemplate""" + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
-            //#elif (ui == "winforms")
-            System.Windows.Forms.MessageBox.Show(@"Unexpected failure in the activation of the add-in ""InventorTemplate""" + System.Environment.NewLine + System.Environment.NewLine + ex.Message);
-            //#endif
+            throw new InvalidOperationException(
+                @"Unexpected failure during activation of the add-in 'InventorTemplate'.",
+                ex
+            );
         }
     }
 
@@ -97,116 +113,176 @@ public class StandardAddInServer : ApplicationAddInServer
         ReleaseRibbonTabs();
         ReleaseAppEvents();
 
-        try
+        if (_uiEvents != null)
         {
+            _uiEvents.OnResetRibbonInterface -= UiEventsOnResetRibbonInterface;
             _uiEvents = null;
-            Marshal.ReleaseComObject(Globals.InvApp);
-            Globals.InvApp = null;
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
-        catch
-        {
-            // ignored
         }
     }
+
     private void ReleaseAppEvents()
     {
+        if (InvAppEvents is null)
+        {
+            return;
+        }
+
         try
         {
             InvAppEvents.OnApplicationOptionChange -= InvAppEvents_OnApplicationOptionChange;
         }
-        catch
+        catch (COMException ex)
         {
-            // ignored
+            Logger.Debug("COMException while releasing application events.", ex);
+        }
+        catch (InvalidComObjectException ex)
+        {
+            Logger.Debug("InvalidComObjectException while releasing application events.", ex);
+        }
+        finally
+        {
+            InvAppEvents = null;
         }
     }
+
     private void ReleaseRibbonTabs()
     {
-        if (_ribbonTabs != null)
+        if (_ribbonTabs.Count == 0)
         {
-            for (int i = 0; i < _ribbonTabs.Count; i++)
+            return;
+        }
+
+        foreach (RibbonTab tab in _ribbonTabs)
+        {
+            try
             {
-                _ribbonTabs[i].Delete();
-                Marshal.ReleaseComObject(_ribbonTabs[i]);
-                _ribbonTabs[i] = null;
+                tab.Delete();
+                Marshal.ReleaseComObject(tab);
+            }
+            catch (COMException ex)
+            {
+                Logger.Debug("COMException releasing RibbonTab.", ex);
+            }
+            catch (InvalidComObjectException ex)
+            {
+                Logger.Debug("InvalidComObjectException releasing RibbonTab.", ex);
             }
         }
 
-        _ribbonTabs = [];
+        _ribbonTabs.Clear();
     }
+
     private void ReleaseRibbonPanels()
     {
-        if (_ribbonPanels != null)
+        if (_ribbonPanels.Count == 0)
         {
-            for (int i = 0; i < _ribbonPanels.Count; i++)
+            return;
+        }
+
+        foreach (RibbonPanel panel in _ribbonPanels)
+        {
+            try
             {
-                _ribbonPanels[i].Delete();
-                Marshal.ReleaseComObject(_ribbonPanels[i]);
-                _ribbonPanels[i] = null;
+                panel.Delete();
+                Marshal.ReleaseComObject(panel);
+            }
+            catch (COMException ex)
+            {
+                Logger.Debug("COMException releasing RibbonPanel.", ex);
+            }
+            catch (InvalidComObjectException ex)
+            {
+                Logger.Debug("InvalidComObjectException releasing RibbonPanel.", ex);
             }
         }
 
-        _ribbonPanels = [];
+        _ribbonPanels.Clear();
     }
+
     private void ReleaseButtons()
     {
+        if (_buttonDefinitions.Count == 0 && _buttons.Count == 0)
+        {
+            return;
+        }
+
         try
         {
-            foreach (var buttonDefinition in _buttonDefinitions)
+            foreach (ButtonDefinition buttonDefinition in _buttonDefinitions)
             {
-                buttonDefinition.Delete();
-                Marshal.ReleaseComObject(buttonDefinition);
+                try
+                {
+                    buttonDefinition.Delete();
+                    Marshal.ReleaseComObject(buttonDefinition);
+                }
+                catch (COMException ex)
+                {
+                    Logger.Debug("COMException releasing ButtonDefinition.", ex);
+                }
+                catch (InvalidComObjectException ex)
+                {
+                    Logger.Debug("InvalidComObjectException releasing ButtonDefinition.", ex);
+                }
             }
 
-            foreach (var commandControl in _buttons)
+            foreach (CommandControl commandControl in _buttons)
             {
-                commandControl.Delete();
-                Marshal.ReleaseComObject(commandControl);
+                try
+                {
+                    commandControl.Delete();
+                    Marshal.ReleaseComObject(commandControl);
+                }
+                catch (COMException ex)
+                {
+                    Logger.Debug("COMException releasing CommandControl.", ex);
+                }
+                catch (InvalidComObjectException ex)
+                {
+                    Logger.Debug("InvalidComObjectException releasing CommandControl.", ex);
+                }
             }
         }
-        catch
+        finally
         {
-            // ignored
+            _buttonDefinitions.Clear();
+            _buttons.Clear();
         }
-
-        _buttonDefinitions = [];
-        _buttons = [];
     }
 
-    public object Automation => null;
+    public object? Automation => null;
+#pragma warning disable CA1725 // Parameter names should match base declaration
     public void ExecuteCommand(int commandId) { }
+#pragma warning restore CA1725 // Parameter names should match base declaration
 
     private void AddToUserInterface()
     {
-        var idwRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Drawing"];
-        var iptRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Part"];
-        var iamRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Assembly"];
-        var ipnRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Presentation"];
+        Ribbon idwRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Drawing"];
+        Ribbon iptRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Part"];
+        Ribbon iamRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Assembly"];
+        Ribbon ipnRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Presentation"];
 
-        var tabIdw = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", idwRibbon);
-        var tabIpt = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", iptRibbon);
-        var tabIam = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", iamRibbon);
-        var tabIpn = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", ipnRibbon);
+        RibbonTab tabIdw = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", idwRibbon);
+        RibbonTab tabIpt = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", iptRibbon);
+        RibbonTab tabIam = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", iamRibbon);
+        RibbonTab tabIpn = UiDefinitionHelper.SetupTab("ExtrabbitCode.Inventor.Core.Template", "ExtrabbitCode.Inventor.Core.Template", ipnRibbon);
         _ribbonTabs.Add(tabIdw);
         _ribbonTabs.Add(tabIpt);
         _ribbonTabs.Add(tabIam);
         _ribbonTabs.Add(tabIpn);
 
-        var infoIdw = UiDefinitionHelper.SetupPanel("Info", "Info", tabIdw);
-        var infoIpt = UiDefinitionHelper.SetupPanel("Info", "Info", tabIpt);
-        var infoIam = UiDefinitionHelper.SetupPanel("Info", "Info", tabIam);
-        var infoIpn = UiDefinitionHelper.SetupPanel("Info", "Info", tabIpn);
+        RibbonPanel infoIdw = UiDefinitionHelper.SetupPanel("Info", "Info", tabIdw);
+        RibbonPanel infoIpt = UiDefinitionHelper.SetupPanel("Info", "Info", tabIpt);
+        RibbonPanel infoIam = UiDefinitionHelper.SetupPanel("Info", "Info", tabIam);
+        RibbonPanel infoIpn = UiDefinitionHelper.SetupPanel("Info", "Info", tabIpn);
         _ribbonPanels.Add(infoIdw);
         _ribbonPanels.Add(infoIpt);
         _ribbonPanels.Add(infoIam);
         _ribbonPanels.Add(infoIpn);
 
-        var addinPanelIdw = UiDefinitionHelper.SetupPanel("AddinCommands", "AddinCommands", tabIdw);
-        var addinPanelIpt = UiDefinitionHelper.SetupPanel("AddinCommands", "AddinCommands", tabIpt);
-        var addinPanelIam = UiDefinitionHelper.SetupPanel("AddinCommands", "AddinCommands", tabIam);
-        var addinPanelIpn = UiDefinitionHelper.SetupPanel("AddinCommands", "AddinCommands", tabIpn);
+        RibbonPanel addinPanelIdw = UiDefinitionHelper.SetupPanel("AddinCommands", "AddinCommands", tabIdw);
+        RibbonPanel addinPanelIpt = UiDefinitionHelper.SetupPanel("AddinCommands", "AddinCommands", tabIpt);
+        RibbonPanel addinPanelIam = UiDefinitionHelper.SetupPanel("AddinCommands", "AddinCommands", tabIam);
+        RibbonPanel addinPanelIpn = UiDefinitionHelper.SetupPanel("AddinCommands", "AddinCommands", tabIpn);
         _ribbonPanels.Add(addinPanelIdw);
         _ribbonPanels.Add(addinPanelIpt);
         _ribbonPanels.Add(addinPanelIam);
@@ -214,10 +290,10 @@ public class StandardAddInServer : ApplicationAddInServer
 
         if (_defaultButton != null)
         {
-            var defaultButtonIdw = addinPanelIdw.CommandControls.AddButton(_defaultButton, true);
-            var defaultButtonIpt = addinPanelIpt.CommandControls.AddButton(_defaultButton, true);
-            var defaultButtonIam = addinPanelIam.CommandControls.AddButton(_defaultButton, true);
-            var defaultButtonIpn = addinPanelIpn.CommandControls.AddButton(_defaultButton, true);
+            CommandControl defaultButtonIdw = addinPanelIdw.CommandControls.AddButton(_defaultButton, true);
+            CommandControl defaultButtonIpt = addinPanelIpt.CommandControls.AddButton(_defaultButton, true);
+            CommandControl defaultButtonIam = addinPanelIam.CommandControls.AddButton(_defaultButton, true);
+            CommandControl defaultButtonIpn = addinPanelIpn.CommandControls.AddButton(_defaultButton, true);
             _buttons.Add(defaultButtonIdw);
             _buttons.Add(defaultButtonIpt);
             _buttons.Add(defaultButtonIam);
@@ -225,10 +301,10 @@ public class StandardAddInServer : ApplicationAddInServer
         }
         if (_info != null)
         {
-            var infoButtonIdw = infoIdw.CommandControls.AddButton(_info, true);
-            var infoButtonIpt = infoIpt.CommandControls.AddButton(_info, true);
-            var infoButtonIam = infoIam.CommandControls.AddButton(_info, true);
-            var infoButtonIpn = infoIpn.CommandControls.AddButton(_info, true);
+            CommandControl infoButtonIdw = infoIdw.CommandControls.AddButton(_info, true);
+            CommandControl infoButtonIpt = infoIpt.CommandControls.AddButton(_info, true);
+            CommandControl infoButtonIam = infoIam.CommandControls.AddButton(_info, true);
+            CommandControl infoButtonIpn = infoIpn.CommandControls.AddButton(_info, true);
             _buttons.Add(infoButtonIdw);
             _buttons.Add(infoButtonIpt);
             _buttons.Add(infoButtonIam);
@@ -245,8 +321,8 @@ public class StandardAddInServer : ApplicationAddInServer
     {
         if (beforeOrAfter == EventTimingEnum.kAfter)
         {
-            var themeManager = Globals.InvApp.ThemeManager;
-            var activeTheme = themeManager.ActiveTheme;
+            ThemeManager themeManager = Globals.InvApp.ThemeManager;
+            Theme activeTheme = themeManager.ActiveTheme;
             string theme = activeTheme.Name;
 
             if (Globals.ActiveTheme.Name != theme) //check if theme has changed

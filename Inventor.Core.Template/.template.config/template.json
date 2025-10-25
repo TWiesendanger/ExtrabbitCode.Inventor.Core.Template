@@ -17,9 +17,9 @@
     {
       "modifiers": [
         {
-          "condition": "(ui == 'wpf')",
+          "condition": "(ui == 'wpfui')",
           "include": [ "UI/Dialog/**/*.xaml", "UI/Dialog/**/*.xaml.cs" ],
-          "exclude": [ "UI/Dialog/frmInfo.cs", "Helper/WindowWrapper.cs" ]
+          "exclude": [ "UI/Dialog/frmInfo.cs", "Helper/WindowWrapper.cs", "UI/Dialog/frmInfo.designer.cs", "UI/Dialog/frmInfo.resx" ]
         },
         {
           "condition": "(ui == 'winforms')",
@@ -29,6 +29,20 @@
         {
           "exclude": [ ".vs/**", "bin/**", "obj/**" ],
           "include": [ "Directory.Build.props" ]
+        },
+        {
+          "condition": "(installerType == 'inno')",
+          "include": [ "Installer/**" ],
+          "exclude": [ "WixInstaller/**" ]
+        },
+        {
+          "condition": "(installerType == 'wix')",
+          "include": [ "WixInstaller/**" ],
+          "exclude": [ "Installer/**" ]
+        },
+        {
+          "condition": "(installerType == 'none')",
+          "exclude": [ "Installer/**", "WixInstaller/**" ]
         }
       ]
     }
@@ -54,10 +68,20 @@
     "inventorVersion": {
       "displayName": "Inventor Version",
       "type": "parameter",
+      "datatype": "choice",
+      "description": "Lowest Inventor version used for the add-in.",
+      "choices": [
+        {
+          "choice": "2025",
+          "description": "Autodesk Inventor 2025"
+        },
+        {
+          "choice": "2026",
+          "description": "Autodesk Inventor 2026"
+        }
+      ],
       "defaultValue": "2026",
-      "replaces": "2026",
-      "datatype": "text",
-      "description": "Lowest Inventor version used for addin."
+      "replaces": "2026"
     },
     "addinDescription": {
       "displayName": "Addin Description",
@@ -91,6 +115,27 @@
         }
       ],
       "defaultValue": "wpfui"
+    },
+    "installerType": {
+      "type": "parameter",
+      "displayName": "Installer Type",
+      "datatype": "choice",
+      "description": "Choose the installer system to include.",
+      "choices": [
+        {
+          "choice": "none",
+          "description": "Do not include any installer"
+        },
+        {
+          "choice": "inno",
+          "description": "Include the Inno Setup installer scripts (Installer folder)"
+        },
+        {
+          "choice": "wix",
+          "description": "Include the WiX installer project"
+        }
+      ],
+      "defaultValue": "inno"
     }
   },
   "primaryOutputs": [
