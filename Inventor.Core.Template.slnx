@@ -12,4 +12,5 @@
     <Platform Project="x64" />
   </Project>
   <Project Path="TemplatePack/TemplatePack.csproj" />
+  <Project Path="WixInstaller/WixInstaller.csproj" Id="aef36514-c251-42a7-b2ab-197c5c84bf62" />
 </Solution>
