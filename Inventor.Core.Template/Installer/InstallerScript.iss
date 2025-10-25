@@ -1,4 +1,4 @@
-#define MyAppName "InventorTemplate"
+#define MyAppName "ExtrabbitCode.Inventor.Core.Template"
 #define MyAppVersion "0.0.0.1"
 #define MyAppPublisher "Company"
 #define MyAppURL "http://www.company.com"
@@ -23,7 +23,7 @@ LicenseFile={#SourcePath}License.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir={#SourcePath}
-OutputBaseFilename=InventorTemplate_{#MyAppVersion}
+OutputBaseFilename=ExtrabbitCode.Inventor.Core.Template_{#MyAppVersion}
 SetupIconFile={#SourcePath}app.ico
 Compression=lzma
 SolidCompression=yes
@@ -33,7 +33,7 @@ WizardStyle=modern
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "..\Addin\InventorTemplate.Inventor.addin"; DestDir: "C:\ProgramData\Autodesk\Inventor Addins";  Flags: ignoreversion
-Source: "..\bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\Addin\ExtrabbitCode.Inventor.Core.Template.addin"; DestDir: "C:\ProgramData\Autodesk\Inventor Addins";  Flags: ignoreversion
+Source: "..\bin\x64\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
