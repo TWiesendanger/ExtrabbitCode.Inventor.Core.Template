@@ -5,6 +5,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Version>1.0.2</Version>
 		<Authors>ExtrabbitCode</Authors>
+		<Company>ExtrabbitCode</Company>
 		<PackageType>Template</PackageType>
 		<IncludeContentInPack>true</IncludeContentInPack>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
@@ -12,6 +13,7 @@
 		<PackageOutputPath>$(MSBuildThisFileDirectory)..\.nupkgs</PackageOutputPath>
 		<Nullable>enable</Nullable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/TWiesendanger/ExtrabbitCode.Inventor.Core.Template</RepositoryUrl>
 	</PropertyGroup>
 
 	<ItemGroup>
