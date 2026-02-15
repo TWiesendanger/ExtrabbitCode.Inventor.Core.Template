@@ -17,38 +17,52 @@
     {
       "modifiers": [
         {
-          "condition": "(ui == 'wpfui')",
-          "include": [ "UI/Dialog/**/*.xaml", "UI/Dialog/**/*.xaml.cs" ],
-          "exclude": [ "UI/Dialog/frmInfo.cs", "Helper/WindowWrapper.cs", "UI/Dialog/frmInfo.designer.cs", "UI/Dialog/frmInfo.resx" ]
-        },
-        {
-          "condition": "(ui == 'winforms')",
-          "exclude": [ "UI/Dialog/**/*.xaml", "UI/Dialog/**/*.xaml.cs" ],
-          "include": [ "UI/Dialog/frmInfo.cs", "Helper/WindowWrapper.cs" ]
-        },
-        {
-          "exclude": [ ".vs/**", "bin/**", "obj/**" ],
+          // base exclusion: artifacts, all UI variants, all installers
+          "exclude": [
+            ".vs/**",
+            "bin/**",
+            "obj/**",
+
+            "UI/Dialog/**/*.xaml",
+            "UI/Dialog/**/*.xaml.cs",
+            "UI/Dialog/frmInfo.cs",
+            "UI/Dialog/frmInfo.designer.cs",
+            "UI/Dialog/frmInfo.resx",
+            "Helper/WindowWrapper.cs",
+
+            "Installer/**",
+          ],
           "include": [ "Directory.Build.props" ]
         },
         {
+          // WPF UI
+          "condition": "(ui == 'wpfui')",
+          "include": [
+            "UI/Dialog/**/*.xaml",
+            "UI/Dialog/**/*.xaml.cs"
+          ]
+        },
+        {
+          // WinForms UI
+          "condition": "(ui == 'winforms')",
+          "include": [
+            "UI/Dialog/frmInfo.cs",
+            "UI/Dialog/frmInfo.designer.cs",
+            "UI/Dialog/frmInfo.resx",
+            "Helper/WindowWrapper.cs"
+          ]
+        },
+        {
+          // Inno installer
           "condition": "(installerType == 'inno')",
-          "include": [ "Installer/**" ],
-          "exclude": [ "WixInstaller/**" ]
-        },
-        {
-          "condition": "(installerType == 'wix')",
-          "include": [ "WixInstaller/**" ],
-          "exclude": [ "Installer/**" ]
-        },
-        {
-          "condition": "(installerType == 'none')",
-          "exclude": [ "Installer/**", "WixInstaller/**" ]
+          "include": [ "Installer/**" ]
         }
+        // installerType == 'none' -> nothing re-included, so neither folder exists
       ]
     }
   ],
   "symbols": {
-    "Framework": {
+    "framework": {
       "type": "parameter",
       "description": "The target framework for the project.",
       "datatype": "choice",
@@ -91,7 +105,7 @@
       "datatype": "text",
       "description": "Description text used for addin."
     },
-    "InstallFolder": {
+    "installFolder": {
       "type": "parameter",
       "datatype": "string",
       "defaultValue": "C:\\ProgramData",
@@ -129,10 +143,6 @@
         {
           "choice": "inno",
           "description": "Include the Inno Setup installer scripts (Installer folder)"
-        },
-        {
-          "choice": "wix",
-          "description": "Include the WiX installer project"
         }
       ],
       "defaultValue": "inno"
