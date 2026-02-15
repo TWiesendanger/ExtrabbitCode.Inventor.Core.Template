@@ -16,7 +16,6 @@
   - [Add Settings](#add-settings)
   - [Use the installer to create a setup](#use-the-installer-to-create-a-setup)
     - [Inno Setup](#inno-setup)
-    - [Wix](#wix)
   - [Build script](#build-script)
   - [Other](#other)
     - [Change Inventor Version](#change-inventor-version)
@@ -28,7 +27,7 @@
 
 # Introduction
 
-![alt text](inventor.png)
+![alt text](images/inventor.png)
 
 If you ever copied multiple things from other addins over and over again, then you will like this template. The idea is to provide a template that already includes alot of standard features that every addin needs. If you want to there is nothing to change at all. You could use a generated addin from this template right out of the box. Things like guids are already generated. There is also a build script to automatically deploy it to a predefined folder.
 
@@ -48,7 +47,7 @@ The following features are provided at the moment:
 - nullability
 - enforced coding style with editorconfig
 - build script
-- inno setup installer script or wix installer project
+- inno setup installer script or none
 - documentation for using and extending the addin
 - nuget package for inventor reference See [Autodesk.Inventor.Sdk](https://www.nuget.org/packages/Autodesk.Inventor.Sdk/)
 
@@ -68,23 +67,23 @@ The following options are currently possible:
 - Addin Description: your description here
 - InstallFolder: C:\ProgramData\YourCompany\YourAddinName (as an example)
 - UI Framework: WPFUI / Winforms
-- Installer Type: Inno Setup / Wix
+- Installer Type: Inno Setup / none
 
 ### Use with User Interface
 
 After installing the template TODO
 
-![image](UiDemo.png)
+![ui demo image](images/UiDemo.png)
 
 ### Use on the commandline
 
 ```powershell
 dotnet new invAddinCore `
   --name "ExtrabbitCode.MyInventorAddin" `
-  --Framework "net8.0-windows" `
+  --framework "net8.0-windows" `
   --inventorVersion "2026" `
   --addinDescription "My custom Inventor Addin for part automation" `
-  --InstallFolder "C:\ProgramData\MyInventorAddin" `
+  --installFolder "C:\ProgramData\MyInventorAddin" `
   --ui "wpfui" `
   --installerType "inno"
 ```
@@ -93,10 +92,22 @@ This will create a new project in the current folder with the name `ExtrabbitCod
 
 ## Help providing for this template
 
-Feel free to fork and then create a pull merge request. The template itself cannot be run directly.
+Feel free to fork and then create a merge request. The template itself cannot be run directly.
 This is mainly because there are some variables that get only replaced when using `dotnet new`.
 
 It's best to create an addin based on the template and develop inside of that. If it's working copy changes to the template.
+
+### Use Installer Script
+
+There is a script that allows to easily update the template locally for testing. You can find it in the `scripts` folder. Just run `UpdateTemplate.cmd` and it will copy the template files into the local template folder. After that you can use `dotnet new invAddinCore` to create a new addin based on the template.
+
+After installing check with `dotnet new --list` if the template is listed. It should be listed like this:
+
+![installed template list](images/installedTemplates.png)
+
+It should be listed now when creating a new project like this:
+
+![installed template list](images/useTemplate.png)
 
 ## UI
 
@@ -146,9 +157,9 @@ and then use it like this:
     Logger.Error("This is an error message");
 ```
 
-For further customization you can look into the `log4net.config` file. By default the log file will be created inside of the addin folder.
+For further customization you can look into the `log4net.config` file. By default the log file will be created in the default windows temp folder.
 
-TODO WHERE IS THE LOGFILE NORMALLY STORED
+So normally a folder will be created here: `C:\Users\YourUser\AppData\Local\Temp\YourAddinName\YourAddinName.log` and the log file will be created there. You can change this in the config file if you want to. Just make sure to not write it into a folder where you dont have write access, otherwise the logging will not work.
 
 ## Add a new button / command
 
@@ -167,7 +178,7 @@ Next, look inside of the `Activate` method. There is a sample line that looks li
 _info = UiDefinitionHelper.CreateButton("Info", "InventorTemplateInfo", @"UI\ButtonResources\Info", theme);
 ```
 
-Follow the exact same principe:
+Follow the exact same principel:
 
 ```csharp
 _yourFieldName = UiDefinitionHelper.CreateButton("DisplayName", "InternalName", @"UI\ButtonResources\YourCommandName", theme);
@@ -248,6 +259,8 @@ There is a file called `Globals.cs`, which can be used to get a reference to the
 Globals.InvApp
 ```
 
+More can be added here but should be used with caution. The more you add here, the more you risk to create a mess.
+
 ## Add Settings
 
 For settings you should use applicationSettings. This allows to add typesafe settings and no dependencies / nuget packages are needed.
@@ -255,6 +268,7 @@ For settings you should use applicationSettings. This allows to add typesafe set
 Just add a new setting here:
 
 TODO LOGPATH NO LONGER USED LIKE THIS
+
 ![image](https://user-images.githubusercontent.com/20424937/194145539-669cf42b-661d-4cde-a863-74bdc1c72d6c.png)
 
 This allows to access them like this:
@@ -267,7 +281,7 @@ Read more here: [Application settings](https://stackoverflow.com/questions/21012
 
 ## Use the installer to create a setup
 
-There are two options provided. One is using inno setup and the other is using wix. Depending on what you prefer you can use either one. Read the corresponding section to get started.
+There are two options provided. One is using inno setup and the other is using none. Depending on what you prefer you can use either one. Read the corresponding section to get started.
 
 ### Inno Setup
 
@@ -286,8 +300,6 @@ Also make sure to change the license.txt file if you dont plan to release your a
 
 > Before running make sure to create a release build of your addin. The installer script looks for the files inside of the release folder.
 
-### Wix
-
 ## Build script
 
 There is a script that is run each time build is used. Look for `Buildscript.cmd` in the root folder. It is used to embed the manifest into the dll file and to copy the addin into the standard inventor addin folder. Also some resources are copied if needed.
@@ -303,7 +315,7 @@ This will be done automatically by the script.
 
 The last and most important stop is to copy everything belonging to the addin into the predefined installfolder. Here the path that you provided at the begining is used.
 
-![image](installFolder.png)
+![image](images/installFolder.png)
 
 ## Other
 
