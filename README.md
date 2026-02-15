@@ -81,7 +81,7 @@ After this it should be available in the command line or as a selection when cre
 
 The nuget package can be found here:
 
-https://www.nuget.org/packages/ExtrabbitCode.Inventor.Core.Template/#versions-body-tab
+[Link](https://www.nuget.org/packages/ExtrabbitCode.Inventor.Core.Template/#versions-body-tab)
 
 ### Use with User Interface
 
