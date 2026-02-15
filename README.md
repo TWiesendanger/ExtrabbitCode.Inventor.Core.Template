@@ -74,7 +74,7 @@ The following options are currently possibel:
 The template is available as a nuget package. You can install it by running the following command in the terminal:
 
 ```powershell
-dotnet new install ExtrabbitCode.Inventor.Core.Template@1.0.1
+dotnet new install ExtrabbitCode.Inventor.Core.Template@1.0.2
 ```
 
 After this it should be available in the command line or as a selection when creating a new procect in visual studio.
