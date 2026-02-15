@@ -60,7 +60,7 @@ By default the highest currently supported Inventor and .net version is used. Yo
 
 ## Demo
 
-The following options are currently possible:
+The following options are currently possibel:
 
 - Framework: .net 8.0 / .net 9.0
 - Inventor Version: 2026 / 2025
@@ -68,6 +68,20 @@ The following options are currently possible:
 - InstallFolder: C:\ProgramData\YourCompany\YourAddinName (as an example)
 - UI Framework: WPFUI / Winforms
 - Installer Type: Inno Setup / none
+
+## Installation
+
+The template is available as a nuget package. You can install it by running the following command in the terminal:
+
+```powershell
+dotnet new install ExtrabbitCode.Inventor.Core.Template@1.0.1
+```
+
+After this it should be available in the command line or as a selection when creating a new procect in visual studio.
+
+The nuget package can be found here:
+
+https://www.nuget.org/packages/ExtrabbitCode.Inventor.Core.Template/#versions-body-tab
 
 ### Use with User Interface
 

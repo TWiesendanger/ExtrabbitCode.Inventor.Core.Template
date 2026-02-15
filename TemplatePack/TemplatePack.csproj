@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<PackageId>ExtrabbitCode.Inventor.Core.Template</PackageId>
 		<TargetFramework>net8.0</TargetFramework>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>ExtrabbitCode</Authors>
 		<PackageType>Template</PackageType>
 		<IncludeContentInPack>true</IncludeContentInPack>
@@ -11,6 +11,7 @@
 		<Description>Autodesk Inventor Add‑in Template</Description>
 		<PackageOutputPath>$(MSBuildThisFileDirectory)..\.nupkgs</PackageOutputPath>
 		<Nullable>enable</Nullable>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -4,6 +4,12 @@ This is a Template for writting dotnet core based Inventor Addins. Version 2025 
 
 A short overview is contained in this readme.
 
+## Install
+
+Use this command in your terminal:
+
+`dotnet new install ExtrabbitCode.Inventor.Core.Template@1.0.1`
+
 ## Change Inventor Version
 
 To change the inventor version, you need to edit the project file. Look for `<InventorVersion>$(InventorVersion)</InventorVersion>` and change it to the desired version. Even better you look for the `Directory.Build.props` file in the root folder and change it there. This way all projects will use the same version.
