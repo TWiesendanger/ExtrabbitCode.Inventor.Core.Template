@@ -28,8 +28,14 @@ jobs:
       - name: Extract version from git tag
         id: version
         run: |
-          TAG=${GITHUB_REF##*/}
-          VERSION=${TAG#v}
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG=${GITHUB_REF##*/}
+            VERSION=${TAG#v}
+          else
+            VERSION=${{ github.event.inputs.version }}
+          fi
+
+          echo "Using version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Restore
