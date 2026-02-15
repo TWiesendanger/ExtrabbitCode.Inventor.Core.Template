@@ -28,11 +28,11 @@ jobs:
       - name: Extract version from git tag
         id: version
         run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            TAG=${GITHUB_REF##*/}
-            VERSION=${TAG#v}
+         if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+            VERSION=${VERSION#v}   # strip leading 'v' if you tag like v1.0.0
           else
-            VERSION=${{ github.event.inputs.version }}
+            VERSION="${{ github.event.inputs.version }}"
           fi
 
           echo "Using version: $VERSION"
