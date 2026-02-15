@@ -3,6 +3,7 @@ name: Publish Template NuGet Package (Trusted Publishing)
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -29,7 +30,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Restore
-        run: dotnet restore ./ExtrabbitCode.Inventor.TemplatePack/ExtrabbitCode.Inventor.TemplatePack.csproj
+        run: dotnet restore ./TemplatePack/TemplatePack.csproj
 
       - name: NuGet login (OIDC → temp API key)
         uses: NuGet/login@v1
@@ -39,7 +40,7 @@ jobs:
 
       - name: Build & pack template
         run: |
-          dotnet pack ./ExtrabbitCode.Inventor.TemplatePack/ExtrabbitCode.Inventor.TemplatePack.csproj \
+          dotnet pack ./TemplatePack/TemplatePack.csproj \
             --configuration Release \
             -p:PackageVersion=${{ steps.version.outputs.version }} \
             -o ./artifacts
