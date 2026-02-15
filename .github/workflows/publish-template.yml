@@ -1,0 +1,51 @@
+name: Publish Template NuGet Package (Trusted Publishing)
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Extract version from git tag
+        id: version
+        run: |
+          TAG=${GITHUB_REF##*/}
+          VERSION=${TAG#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Restore
+        run: dotnet restore ./ExtrabbitCode.Inventor.TemplatePack/ExtrabbitCode.Inventor.TemplatePack.csproj
+
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USERNAME }}
+
+      - name: Build & pack template
+        run: |
+          dotnet pack ./ExtrabbitCode.Inventor.TemplatePack/ExtrabbitCode.Inventor.TemplatePack.csproj \
+            --configuration Release \
+            -p:PackageVersion=${{ steps.version.outputs.version }} \
+            -o ./artifacts
+
+      - name: Push to NuGet.org
+        run: dotnet nuget push "./artifacts/*.nupkg" \
+               --api-key ${{ steps.login.outputs.NUGET_API_KEY }} \
+               --source https://api.nuget.org/v3/index.json \
+               --skip-duplicate
