@@ -4,7 +4,10 @@ on:
   release:
     types: [published]
   workflow_dispatch:
-
+    inputs:
+      version:
+        description: "Package version (e.g. 1.0.0)"
+        required: true
 permissions:
   id-token: write
   contents: read
