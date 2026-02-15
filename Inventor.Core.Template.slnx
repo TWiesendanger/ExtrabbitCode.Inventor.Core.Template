@@ -4,6 +4,7 @@
   </Configurations>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+    <File Path=".github/workflows/publish-template.yml" />
     <File Path=".gitignore" />
     <File Path="README.md" />
     <File Path="scripts/Update-InvAddinTemplate.ps1" />
