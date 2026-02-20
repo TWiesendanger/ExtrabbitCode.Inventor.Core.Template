@@ -85,9 +85,17 @@ The nuget package can be found here:
 
 ### Use with User Interface
 
-After installing the template TODO
-
 ![ui demo image](images/UiDemo.png)
+
+Choose between these options:
+
+| Option | Selected value | What it means |
+|---|---|---|
+| Framework | **.NET 8.0 (windows) (Long Term Support)** | Targets the Windows-specific .NET 8 runtime (LTS). |
+| Inventor Version | **2026** | The add-in/template is aligned to Autodesk Inventor **2026** (e.g., references, compatibility expectations, packaging target). |
+| Addin Description | **ExtrabbitCode.Description** | The description string used for the Inventor add-in metadata. |
+| InstallFolder | **C:\ProgramData\Inventor.Core.Template** | Default installation/output folder used by the template/installer logic. `ProgramData` implies a machine-wide location (not user-profile specific). |
+| UI Framework | **wpfui** | UI layer is based on **wpfui** (WPF + wpfui library), influencing how dialogs/windows are built and styled. |
 
 ### Use on the commandline
 
@@ -281,14 +289,12 @@ For settings you should use applicationSettings. This allows to add typesafe set
 
 Just add a new setting here:
 
-TODO LOGPATH NO LONGER USED LIKE THIS
-
 ![image](https://user-images.githubusercontent.com/20424937/194145539-669cf42b-661d-4cde-a863-74bdc1c72d6c.png)
 
 This allows to access them like this:
 `var logPath = Properties.Settings.Default.logPath;`
 
-Keep in mind that depending on if the setting is a user setting or an application setting, they behave different.
+Keep in mind that depending on if the setting is a user setting or an application setting, they behave differently.
 Application settings get their own section in app.config and cannot be changed while running. User settings can but are now overwritten by a special path depending on the user.
 
 Read more here: [Application settings](https://stackoverflow.com/questions/2101273/how-do-i-retrieve-applicationsettings-from-a-loaded-app-config-file/9704380#9704380)
