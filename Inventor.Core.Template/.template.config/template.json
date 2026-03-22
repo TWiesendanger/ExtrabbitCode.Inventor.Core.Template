@@ -30,9 +30,13 @@
             "UI/Dialog/frmInfo.resx",
             "Helper/WindowWrapper.cs",
 
-            "Installer/**",
+            "Installer/**"
           ],
-          "include": [ "Directory.Build.props" ]
+          "include": [
+            "Directory.Build.props",
+            "gitignore",
+            "editorconfig"
+          ]
         },
         {
           // WPF UI

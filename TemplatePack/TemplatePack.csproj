@@ -13,6 +13,7 @@
 		<PackageOutputPath>$(MSBuildThisFileDirectory)..\.nupkgs</PackageOutputPath>
 		<Nullable>enable</Nullable>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<NoDefaultExcludes>true</NoDefaultExcludes>
 		<RepositoryUrl>https://github.com/TWiesendanger/ExtrabbitCode.Inventor.Core.Template</RepositoryUrl>
 	</PropertyGroup>
 
@@ -28,6 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="..\.editorconfig" Link=".editorconfig" />
+	  <Content Include="..\.gitignore" PackagePath="..\Inventor.Core.Template\" />
+	  <Content Include="..\.editorconfig" PackagePath="..\Inventor.Core.Template\" />
 	</ItemGroup>
 </Project>
