@@ -15,13 +15,13 @@ namespace ExtrabbitCode.Inventor.Core.Template;
 
 [ProgId("Inventor.Core.Template.StandardAddInServer")]
 [Guid(Globals.AddInClientId)]
-public class StandardAddInServer : ApplicationAddInServer
+public class StandardAddInServer : IsolatedApplicationAddInServer
 {
     private UserInterfaceEvents? _uiEvents;
-    private List<RibbonPanel> _ribbonPanels = [];
-    private List<RibbonTab> _ribbonTabs = [];
-    private List<CommandControl> _buttons = [];
-    private List<ButtonDefinition> _buttonDefinitions = [];
+    private readonly List<RibbonPanel> _ribbonPanels = [];
+    private readonly List<RibbonTab> _ribbonTabs = [];
+    private readonly List<CommandControl> _buttons = [];
+    private readonly List<ButtonDefinition> _buttonDefinitions = [];
 
     public static ApplicationEvents? InvAppEvents{ get; set; }
 
@@ -51,24 +51,19 @@ public class StandardAddInServer : ApplicationAddInServer
         }
     }
 
-    /// <summary>
-    /// This method is called by Inventor when it loads the AddIn. The AddInSiteObject provides access to the Inventor Application object. The FirstTime flag indicates if the AddIn is loaded for the first time. However, with the introduction of the ribbon this argument is always true.
-    /// </summary>
-    /// <param name="addInSiteObject">The add in site object.</param>
-    /// <param name="firstTime">if set to <c>true</c> [first time].</param>
     // ReSharper disable once CA1725
 #pragma warning disable CA1725 // Parameter names should match base declaration
-    public void Activate(ApplicationAddInSite addInSiteObject, bool firstTime)
+    public override void OnActivate()
 #pragma warning restore CA1725 // Parameter names should match base declaration
     {
-        ArgumentNullException.ThrowIfNull(addInSiteObject);
+        ArgumentNullException.ThrowIfNull(ApplicationAddInSite);
 
         try
         {
             Logger.Debug("Addin InventorTemplate Activated");
 
-            Globals.InvApp = addInSiteObject.Application;
-            Globals.InvApplicationAddInSite = addInSiteObject;
+            Globals.InvApp = ApplicationAddInSite.Application;
+            Globals.InvApplicationAddInSite = ApplicationAddInSite;
             UiEvents = Globals.InvApp.UserInterfaceManager.UserInterfaceEvents;
             InvAppEvents = Globals.InvApp.ApplicationEvents;
             InvAppEvents.OnApplicationOptionChange += InvAppEvents_OnApplicationOptionChange;
@@ -92,7 +87,7 @@ public class StandardAddInServer : ApplicationAddInServer
             _buttonDefinitions.Add(_info);
             _buttonDefinitions.Add(_defaultButton);
 
-            if (firstTime)
+            if (FirstTime)
             {
                 AddToUserInterface();
             }
@@ -106,18 +101,20 @@ public class StandardAddInServer : ApplicationAddInServer
         }
     }
 
-    public void Deactivate()
+    public override void OnDeactivate()
     {
         ReleaseButtons();
         ReleaseRibbonPanels();
         ReleaseRibbonTabs();
         ReleaseAppEvents();
 
-        if (_uiEvents != null)
+        if (_uiEvents == null)
         {
-            _uiEvents.OnResetRibbonInterface -= UiEventsOnResetRibbonInterface;
-            _uiEvents = null;
+            return;
         }
+
+        _uiEvents.OnResetRibbonInterface -= UiEventsOnResetRibbonInterface;
+        _uiEvents = null;
     }
 
     private void ReleaseAppEvents()
@@ -249,11 +246,6 @@ public class StandardAddInServer : ApplicationAddInServer
         }
     }
 
-    public object? Automation => null;
-#pragma warning disable CA1725 // Parameter names should match base declaration
-    public void ExecuteCommand(int commandId) { }
-#pragma warning restore CA1725 // Parameter names should match base declaration
-
     private void AddToUserInterface()
     {
         Ribbon idwRibbon = Globals.InvApp.UserInterfaceManager.Ribbons["Drawing"];
@@ -328,7 +320,7 @@ public class StandardAddInServer : ApplicationAddInServer
             if (Globals.ActiveTheme.Name != theme) //check if theme has changed
             {
                 Deactivate();
-                Activate(Globals.InvApplicationAddInSite, true);
+                OnActivate();
             }
         }
 

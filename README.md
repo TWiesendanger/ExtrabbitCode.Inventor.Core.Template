@@ -50,6 +50,7 @@ The following features are provided at the moment:
 - inno setup installer script or none
 - documentation for using and extending the addin
 - nuget package for inventor reference See [Autodesk.Inventor.Sdk](https://www.nuget.org/packages/Autodesk.Inventor.Sdk/)
+- Dependecy isolation
 
 Feel free to ask for other features by emailing me <tobias.wiesendanger@gmail.com> or by opening a issue.
 
@@ -394,3 +395,9 @@ For all the other references, there are different things that can lead to this:
 
 This should allow to fix everything other than nuget packages. To restore those use this:
 `dotnet restore` inside of the developer shell.
+
+## Dependecy isolation
+
+Inventor Addins are loaded into the same process as Inventor. This can lead to some dependency conflicts. To avoid this, the template uses a technique called isolation. This means that the addin is loaded into a separate AppDomain. This way, the addin can have its own dependencies without affecting Inventor or other addins.
+
+Before you might have used another logger version than autodesk is using. This could even happen after a dot update.
