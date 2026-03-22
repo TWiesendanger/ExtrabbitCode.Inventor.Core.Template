@@ -27,3 +27,10 @@ Also `Warnings` are treated as errors. If you want to change this, you can do th
 ```xml
 <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 ```
+
+## Isolation
+
+Inventor Addins are loaded into the same process as Inventor. This can lead to some dependency conflicts. To avoid this, the template uses a technique called isolation. This means that the addin is loaded into a separate AppDomain. This way, the addin can have its own dependencies without affecting Inventor or other addins.
+
+Before you might have used another logger version than autodesk is using. This could even happen after a dot update.
+This is now using a separate AppDomain, so you can use any version of the logger you want without worrying about conflicts.
