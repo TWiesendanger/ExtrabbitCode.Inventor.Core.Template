@@ -3,6 +3,14 @@ root = true
 
 # C# files
 [*.cs]
+# CA1031: Do not catch general exception types
+dotnet_diagnostic.CA1031.severity = none
+
+# CA1823: Avoid unused private fields
+dotnet_diagnostic.CA1823.severity = warning
+
+# CS9113: Parameter is unread (e.g. unused primary constructor parameter)
+dotnet_diagnostic.CS9113.severity = warning
 
 #### Core EditorConfig Options ####
 
