@@ -96,10 +96,14 @@
         {
           "choice": "2026",
           "description": "Autodesk Inventor 2026"
+        },
+        {
+          "choice": "2027",
+          "description": "Autodesk Inventor 2027"
         }
       ],
-      "defaultValue": "2026",
-      "replaces": "2026"
+      "defaultValue": "2027",
+      "replaces": "2027"
     },
     "addinDescription": {
       "displayName": "Addin Description",

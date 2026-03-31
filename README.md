@@ -59,12 +59,18 @@ Feel free to ask for other features by emailing me <tobias.wiesendanger@gmail.co
 The template is setup for Inventor 2025 and higher. It uses the .net 8.0 or higher framework.
 By default the highest currently supported Inventor and .net version is used. You can change this in creation dialog.
 
+### Version 1.2.0
+
+- Added the option to choose version 2027
+- Changed analyzer to no longer treat warnings as errors by default. It can be still activated.
+- Bugfix: New files where marked as content by mistake. They should be C# Compiler normally or whatever the default is.
+
 ## Demo
 
 The following options are currently possibel:
 
 - Framework: .net 8.0 / .net 9.0
-- Inventor Version: 2026 / 2025
+- Inventor Version: 2027 / 2026 / 2025
 - Addin Description: your description here
 - InstallFolder: C:\ProgramData\YourCompany\YourAddinName (as an example)
 - UI Framework: WPFUI / Winforms
@@ -93,7 +99,7 @@ Choose between these options:
 | Option | Selected value | What it means |
 |---|---|---|
 | Framework | **.NET 8.0 (windows) (Long Term Support)** | Targets the Windows-specific .NET 8 runtime (LTS). |
-| Inventor Version | **2026** | The add-in/template is aligned to Autodesk Inventor **2026** (e.g., references, compatibility expectations, packaging target). |
+| Inventor Version | **2027** | The add-in/template is aligned to Autodesk Inventor **2027** (e.g., references, compatibility expectations, packaging target). |
 | Addin Description | **ExtrabbitCode.Description** | The description string used for the Inventor add-in metadata. |
 | InstallFolder | **C:\ProgramData\Inventor.Core.Template** | Default installation/output folder used by the template/installer logic. `ProgramData` implies a machine-wide location (not user-profile specific). |
 | UI Framework | **wpfui** | UI layer is based on **wpfui** (WPF + wpfui library), influencing how dialogs/windows are built and styled. |
@@ -104,7 +110,7 @@ Choose between these options:
 dotnet new invAddinCore `
   --name "ExtrabbitCode.MyInventorAddin" `
   --framework "net8.0-windows" `
-  --inventorVersion "2026" `
+  --inventorVersion "2027" `
   --addinDescription "My custom Inventor Addin for part automation" `
   --installFolder "C:\ProgramData\MyInventorAddin" `
   --ui "wpfui" `

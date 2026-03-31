@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<OutputType>Library</OutputType>
@@ -42,10 +42,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Autodesk.Inventor.Sdk" Version="1.0.3" />
-		<PackageReference Include="log4net" Version="3.2.0" />
+		<PackageReference Include="Autodesk.Inventor.Sdk" Version="2.0.0" />
+		<PackageReference Include="log4net" Version="3.3.0" />
 		<!--#if (ui == "wpfui")-->
-		<PackageReference Include="WPF-UI" Version="4.0.3" />
+		<PackageReference Include="WPF-UI" Version="4.2.0" />
 		<!--#endif-->
 	</ItemGroup>
 

@@ -8,7 +8,7 @@ A short overview is contained in this readme.
 
 Use this command in your terminal:
 
-`dotnet new install ExtrabbitCode.Inventor.Core.Template@1.0.1`
+`dotnet new install ExtrabbitCode.Inventor.Core.Template@1.2.0`
 
 ## Change Inventor Version
 
