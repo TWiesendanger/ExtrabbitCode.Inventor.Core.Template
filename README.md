@@ -356,9 +356,9 @@ To use iLogic dll's, you need to edit the project file. You can add `<UseILogic>
 
 ## Analyzer
 
-The analyzer is pretty strict on purpose. It forces you to use best practises and avoid common mistakes. If it is to strict for you, feel free to edit the ruleset file called `.editorconfig` in the root folder. By default using `var` is not allowed. If you want to change this, just edit the file and change the corresponding rule.
+The analyzer can be pretty strict if `TreatWarningAsErrors` is used. It forces you to use best practises and avoid common mistakes. If it is to strict for you, feel free to edit the ruleset file called `.editorconfig` in the root folder. By default using `var` is not allowed. If you want to change this, just edit the file and change the corresponding rule.
 
-Also `Warnings` are treated as errors. If you want to change this, you can do this by removing this line from the project file:
+If you want to change this, you can do this by changing this line from the project to `true`:
 
 ```xml
 <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
