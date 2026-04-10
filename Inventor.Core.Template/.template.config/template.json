@@ -78,6 +78,10 @@
         {
           "choice": "net9.0-windows",
           "description": "Target net9.0-windows"
+        },
+        {
+          "choice": "net10.0-windows",
+          "description": "Target net10.0-windows"
         }
       ],
       "replaces": "net8.0-windows",
