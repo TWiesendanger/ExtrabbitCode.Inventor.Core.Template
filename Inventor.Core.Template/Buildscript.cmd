@@ -9,12 +9,6 @@ echo ProjectDir is %ProjectDir%
 echo TargetName is %TargetName%
 echo TargetPath is %TargetPath%
 echo TargetDir is %TargetDir%
-echo "%ProjectDir%Addin\signing\mt.exe"
-echo "%ProjectDir%Addin\ExtrabbitCode.Inventor.Core.Template.manifest"
-
-echo - Embed the manifest into the dll. 
-echo %ProjectDir%Addin\%TargetName%.manifest
-"%ProjectDir%Addin\signing\mt.exe" -manifest "%ProjectDir%Addin\ExtrabbitCode.Inventor.Core.Template.manifest" -outputresource:"%TargetPath%";#2
 
 echo - Copy the .addin file and the ButtonResources folder into the result folder.
 if not exist "C:\ProgramData\Autodesk\Inventor Addins" mkdir "C:\ProgramData\Autodesk\Inventor Addins"

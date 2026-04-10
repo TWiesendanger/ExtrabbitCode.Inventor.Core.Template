@@ -329,13 +329,13 @@ Also make sure to change the license.txt file if you dont plan to release your a
 
 ## Build script
 
-There is a script that is run each time build is used. Look for `Buildscript.cmd` in the root folder. It is used to embed the manifest into the dll file and to copy the addin into the standard inventor addin folder. Also some resources are copied if needed.
+There is a script that is run each time build is used. Look for `Buildscript.cmd` in the root folder. It is used copy the addin into the standard inventor addin folder. Also some resources are copied if needed.
 
-The embedding is needed. Without the addin will not load correctly. You can check if this was successfull by opening the dll file inside of visual studio.
+The manifest is no longer handled by this (look for the property `ApplicationManifest` in the csproj). The embedding is still needed. Without the addin will not load correctly. You can check if this was successfull by opening the dll file inside of visual studio.
 
 ![image](https://user-images.githubusercontent.com/20424937/184023722-1a770b7c-30fb-467b-8cfe-737e17e0513f.png)
 
-If this is not present, something went wrong. Try checking the path to mt.exe. This can also be provided from other sources.
+If this is not present, something went wrong.
 
 After this step, if the addin is already existing, the addin file will be deleted. After this the file has to be copied from your debug folder to this folder.
 This will be done automatically by the script.

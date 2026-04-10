@@ -8,6 +8,7 @@
 		<CopyInventorFiles>$(CopyInventorFiles)</CopyInventorFiles>
 		<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
 		<Platforms>x64</Platforms>
+		<ApplicationManifest>$(ProjectDir)Addin\ExtrabbitCode.Inventor.Core.Template.manifest</ApplicationManifest>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 		<Nullable>enable</Nullable>
