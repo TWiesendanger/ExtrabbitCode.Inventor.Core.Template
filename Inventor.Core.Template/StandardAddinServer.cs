@@ -13,7 +13,7 @@ using Wpf.Ui.Appearance;
 
 namespace ExtrabbitCode.Inventor.Core.Template;
 
-[ProgId("Inventor.Core.Template.StandardAddInServer")]
+[ProgId("ExtrabbitCode.Inventor.Core.Template.StandardAddInServer")]
 [Guid(Globals.AddInClientId)]
 public class StandardAddInServer : IsolatedApplicationAddInServer
 {
