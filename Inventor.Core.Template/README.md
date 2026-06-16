@@ -8,7 +8,11 @@ A short overview is contained in this readme.
 
 Use this command in your terminal:
 
-`dotnet new install ExtrabbitCode.Inventor.Core.Template@1.2.0`
+`dotnet new install ExtrabbitCode.Inventor.Core.Template@1.4.0`
+
+## UI
+
+Dialogs can be built with **Modern UI** (the default, via [ExtrabbitCode.Inventor.ModernUi](https://www.nuget.org/packages/ExtrabbitCode.Inventor.ModernUi/) — [docs](https://modernui.extrabbitcode.com/)), **wpfui** or **winforms**. Choose the option with the `--ui` parameter (`modernui` / `wpfui` / `winforms`) or in the Visual Studio creation dialog.
 
 ## Change Inventor Version
 

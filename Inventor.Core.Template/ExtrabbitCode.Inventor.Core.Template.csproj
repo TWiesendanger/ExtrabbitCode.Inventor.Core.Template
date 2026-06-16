@@ -17,7 +17,7 @@
 		<!--#if (ui == "winforms")-->
 		<UseWPF>false</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
-		<!--#elseif (ui == "wpfui")-->
+		<!--#else-->
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -36,12 +36,16 @@
 	<ItemGroup>
 	  <Content Remove="UI\Dialog\InfoDialog.xaml" />
 	  <Content Remove="UI\Dialog\InfoDialog.xaml.cs" />
+	  <Content Remove="UI\Dialog\InfoView.xaml" />
+	  <Content Remove="UI\Dialog\InfoView.xaml.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Autodesk.Inventor.Sdk" Version="2.0.0" />
 		<PackageReference Include="log4net" Version="3.3.0" />
-		<!--#if (ui == "wpfui")-->
+		<!--#if (ui == "modernui")-->
+		<PackageReference Include="ExtrabbitCode.Inventor.ModernUi" Version="1.0.0" />
+		<!--#elseif (ui == "wpfui")-->
 		<PackageReference Include="WPF-UI" Version="4.2.0" />
 		<!--#endif-->
 	</ItemGroup>

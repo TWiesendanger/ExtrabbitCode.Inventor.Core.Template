@@ -1,0 +1,77 @@
+<!--  /-:msbuild-conditional:noEmit  -->
+<UserControl
+    x:Class="ExtrabbitCode.Inventor.Core.Template.UI.Dialog.InfoView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <!--  Read-only display box: keeps the Modern UI themed surface but has no hover/focus accent
+              underline, since these fields only show information and cannot be edited.  -->
+        <Style x:Key="ReadOnlyDisplayTextBox" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Foreground}" />
+            <Setter Property="Background" Value="{DynamicResource Brush.Control}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush.Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="{DynamicResource Padding.Control}" />
+            <Setter Property="MinHeight" Value="{DynamicResource Size.ControlHeight}" />
+            <Setter Property="FontFamily" Value="{DynamicResource Font.Family}" />
+            <Setter Property="FontSize" Value="{DynamicResource Font.Size.Normal}" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{DynamicResource Radius.Control}"
+                                SnapsToDevicePixels="True">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Focusable="False"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <!--  Standard WPF controls are themed automatically when hosted in a ModernWindow.  -->
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Label
+            Grid.Row="0"
+            VerticalAlignment="Center"
+            Content="Program Version:" />
+        <TextBox
+            Grid.Row="1"
+            Margin="0,5,0,15"
+            Style="{StaticResource ReadOnlyDisplayTextBox}"
+            Text="{Binding ProgramVersion}" />
+
+        <Label
+            Grid.Row="2"
+            VerticalAlignment="Top"
+            Content="Version History:" />
+        <TextBox
+            Grid.Row="3"
+            AcceptsReturn="True"
+            Style="{StaticResource ReadOnlyDisplayTextBox}"
+            Text="{Binding VersionHistory}"
+            VerticalContentAlignment="Top"
+            VerticalScrollBarVisibility="Auto" />
+    </Grid>
+</UserControl>
+<!--  /+:msbuild-conditional:noEmit  -->

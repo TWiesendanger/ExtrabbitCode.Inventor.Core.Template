@@ -1,3 +1,8 @@
+# ExtrabbitCode.Inventor.Core.Template
+
+[![NuGet](https://img.shields.io/nuget/v/ExtrabbitCode.Inventor.Core.Template.svg?logo=nuget)](https://www.nuget.org/packages/ExtrabbitCode.Inventor.Core.Template)
+[![Downloads](https://img.shields.io/nuget/dt/ExtrabbitCode.Inventor.Core.Template.svg)](https://www.nuget.org/packages/ExtrabbitCode.Inventor.Core.Template)
+
 - [Introduction](#introduction)
   - [Version](#version)
   - [Demo](#demo)
@@ -5,7 +10,9 @@
     - [Use on the commandline](#use-on-the-commandline)
   - [Help providing for this template](#help-providing-for-this-template)
   - [UI](#ui)
-    - [WPF](#wpf)
+    - [Modern UI (default)](#modern-ui-default)
+    - [WPF UI (wpfui)](#wpf-ui-wpfui)
+    - [WinForms](#winforms)
   - [Info dialog](#info-dialog)
   - [Logger](#logger)
   - [Add a new button / command](#add-a-new-button--command)
@@ -39,7 +46,7 @@ The following features are provided at the moment:
 - default logging with log4net
 - dark and Lighttheme support
 - default buttons for all environments
-- info dialog (show patch notes) (wpf or winforms)
+- info dialog (show patch notes) (Modern UI, wpfui or winforms)
 - unload and load of addin
 - reset of user interface
 - loading settings file
@@ -59,6 +66,11 @@ Feel free to ask for other features by emailing me <tobias.wiesendanger@gmail.co
 The template is setup for Inventor 2025 and higher. It uses the .net 8.0 or higher framework.
 By default the highest currently supported Inventor and .net version is used. You can change this in creation dialog.
 
+### Version 1.4.0
+
+- Added [ExtrabbitCode.Inventor.ModernUi](https://www.nuget.org/packages/ExtrabbitCode.Inventor.ModernUi/) ([docs](https://modernui.extrabbitcode.com/)) as a UI option and made it the **new default**. It is a tiny, conflict-free WPF styling library built specifically for Inventor add-ins. `wpfui` and `winforms` can still be selected.
+- The info dialog is now built with Modern UI when that option is chosen.
+
 ### Version 1.2.0
 
 - Added the option to choose version 2027
@@ -73,7 +85,7 @@ The following options are currently possibel:
 - Inventor Version: 2027 / 2026 / 2025
 - Addin Description: your description here
 - InstallFolder: C:\ProgramData\YourCompany\YourAddinName (as an example)
-- UI Framework: WPFUI / Winforms
+- UI Framework: ModernUi (default) / WPFUI / Winforms
 - Installer Type: Inno Setup / none
 
 ## Installation
@@ -81,7 +93,7 @@ The following options are currently possibel:
 The template is available as a nuget package. You can install it by running the following command in the terminal:
 
 ```powershell
-dotnet new install ExtrabbitCode.Inventor.Core.Template@1.3.1
+dotnet new install ExtrabbitCode.Inventor.Core.Template@1.4.0
 ```
 
 After this it should be available in the command line or as a selection when creating a new procect in visual studio.
@@ -102,7 +114,7 @@ Choose between these options:
 | Inventor Version | **2027** | The add-in/template is aligned to Autodesk Inventor **2027** (e.g., references, compatibility expectations, packaging target). |
 | Addin Description | **ExtrabbitCode.Description** | The description string used for the Inventor add-in metadata. |
 | InstallFolder | **C:\ProgramData\Inventor.Core.Template** | Default installation/output folder used by the template/installer logic. `ProgramData` implies a machine-wide location (not user-profile specific). |
-| UI Framework | **wpfui** | UI layer is based on **wpfui** (WPF + wpfui library), influencing how dialogs/windows are built and styled. |
+| UI Framework | **modernui** | UI layer is based on **ExtrabbitCode Modern UI** (the default), a conflict-free WPF styling library for Inventor add-ins. `wpfui` and `winforms` remain selectable. |
 
 ### Use on the commandline
 
@@ -113,7 +125,7 @@ dotnet new invAddinCore `
   --inventorVersion "2027" `
   --addinDescription "My custom Inventor Addin for part automation" `
   --installFolder "C:\ProgramData\MyInventorAddin" `
-  --ui "wpfui" `
+  --ui "modernui" `
   --installerType "inno"
 ```
 
@@ -140,11 +152,38 @@ It should be listed now when creating a new project like this:
 
 ## UI
 
-There are two options provided. One is using wpf and the other is using winforms. Depending on what you prefer you can use either one. Read the corresponding section to get started. I personally recommend wpf, mainly because it is more modern and scales better on high dpi screens.
+There are three options provided: **Modern UI** (the default), **wpfui** and **winforms**. Depending on what you prefer you can use any one of them. Read the corresponding section to get started. I recommend a WPF based option (Modern UI or wpfui), mainly because it is more modern and scales better on high dpi screens.
 
-### WPF
+### Modern UI (default)
 
-The wpf template uses wpfui for theming. You can find more information about it here: [WPF UI](https://github.com/lepoco/wpfuiI)
+This is the default and recommended option. It uses [ExtrabbitCode.Inventor.ModernUi](https://www.nuget.org/packages/ExtrabbitCode.Inventor.ModernUi/), a tiny, conflict-free WPF styling library built specifically for Inventor add-ins. It styles standard WPF controls (light/dark) and is window-scoped, so several add-ins can each ship their own version into one `Inventor.exe` without clashing.
+
+Full documentation for Modern UI is available here: [Modern UI documentation](https://modernui.extrabbitcode.com/)
+
+The sample info dialog shows how to use it. The dialog content lives in a `UserControl` (`UI\Dialog\InfoView.xaml`) that is hosted in a `ModernWindow`. The Inventor theme and UI font are read and applied window-scoped when the dialog is shown:
+
+```csharp
+ModernTheme theme = Globals.ActiveTheme.Name == InventorThemeConstants.LightTheme
+    ? ModernTheme.Light
+    : ModernTheme.Dark;
+
+FontOptions font = FontOptions.FromInventor(
+    Globals.InvApp.GeneralOptions.TextAppearance,
+    Globals.InvApp.GeneralOptions.TextSize);
+
+ModernWindow window = new(theme, font: font)
+{
+    Title = "Info ...",
+    Content = new InfoView(),
+};
+window.ShowDialog();
+```
+
+Standard WPF controls placed inside the `ModernWindow` are themed automatically. Look for the `Button.cs` file to see how it is used.
+
+### WPF UI (wpfui)
+
+This option uses wpfui for theming. You can find more information about it here: [WPF UI](https://github.com/lepoco/wpfui)
 There is a sample info dialog that shows how to use it. Make sure to also set the theme when showing a dialog.
 
 This can be done like this:
@@ -157,9 +196,13 @@ infoDialog.ShowDialog();
 
 Look for the 'Button.cs' file to see how it is used.
 
+### WinForms
+
+A plain Windows Forms dialog (`UI\Dialog\frmInfo.cs`) is provided for those who prefer winforms. It is shown owned to the Inventor main window via a `WindowWrapper`. Look for the `Button.cs` file to see how it is used.
+
 ## Info dialog
 
-There is a default dialog provided. Depending on if you choose wpf or winforms for the addin, the dialog will be created accordingly.
+There is a default dialog provided. Depending on if you choose Modern UI, wpfui or winforms for the addin, the dialog will be created accordingly.
 
 ![image](https://user-images.githubusercontent.com/20424937/184018865-e5be260e-9ca1-4212-bc8a-3a97a92dd7bf.png)
 

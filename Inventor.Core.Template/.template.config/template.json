@@ -39,11 +39,19 @@
           ]
         },
         {
-          // WPF UI
+          // ExtrabbitCode Modern UI (default)
+          "condition": "(ui == 'modernui')",
+          "include": [
+            "UI/Dialog/InfoView.xaml",
+            "UI/Dialog/InfoView.xaml.cs"
+          ]
+        },
+        {
+          // WPF UI (wpfui)
           "condition": "(ui == 'wpfui')",
           "include": [
-            "UI/Dialog/**/*.xaml",
-            "UI/Dialog/**/*.xaml.cs"
+            "UI/Dialog/InfoDialog.xaml",
+            "UI/Dialog/InfoDialog.xaml.cs"
           ]
         },
         {
@@ -132,15 +140,19 @@
       "description": "Choose a UI framework for dialogs.",
       "choices": [
         {
-          "choice": "winforms",
-          "description": "Use Windows Forms"
+          "choice": "modernui",
+          "description": "Use ExtrabbitCode Modern UI (default, recommended)"
         },
         {
           "choice": "wpfui",
+          "description": "Use WPF UI (wpfui)"
+        },
+        {
+          "choice": "winforms",
           "description": "Use Windows Forms"
         }
       ],
-      "defaultValue": "wpfui"
+      "defaultValue": "modernui"
     },
     "installerType": {
       "type": "parameter",

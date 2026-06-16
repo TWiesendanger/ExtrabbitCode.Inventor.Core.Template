@@ -1,13 +1,21 @@
-﻿using ExtrabbitCode.Inventor.Core.Template.Helper;
-//#if (ui == "wpfui")
-using ExtrabbitCode.Inventor.Core.Template.Models;
-using ExtrabbitCode.Inventor.Core.Template.UI.Dialog;
 using System;
 using System.Runtime.CompilerServices;
+using ExtrabbitCode.Inventor.Core.Template.Helper;
+using ExtrabbitCode.Inventor.Core.Template.UI.Dialog;
+using log4net;
+//#if (ui == "wpfui" || ui == "modernui")
+using ExtrabbitCode.Inventor.Core.Template.Models;
 using System.Windows;
 //#endif
-using log4net;
+//#if (ui == "modernui")
+using System.Windows.Interop;
+using System.Windows.Media.Imaging;
+using ExtrabbitCode.Inventor.ModernUi;
+using ModernTheme = ExtrabbitCode.Inventor.ModernUi.Theme;
+//#endif
+//#if (ui == "wpfui")
 using Wpf.Ui.Appearance;
+//#endif
 
 
 namespace ExtrabbitCode.Inventor.Core.Template.UI;
@@ -54,7 +62,9 @@ public class UiButton
                 return;
             case "ExtrabbitCode.Inventor.Core.Template.Info":
                 Logger.Info("Templatebutton pressed");
-                //#if (ui == "wpfui")
+                //#if (ui == "modernui")
+                ShowInfoDialog();
+                //#elif (ui == "wpfui")
                 InfoDialog infoDialog = new();
                 SetDialogTheme(infoDialog);
                 infoDialog.ShowDialog();
@@ -70,6 +80,39 @@ public class UiButton
         }
     }
 
+    //#if (ui == "modernui")
+    /// <summary>
+    ///     Shows the info dialog using the ExtrabbitCode Modern UI library. The theme and font are read
+    ///     from Inventor and applied window-scoped, so the dialog matches Inventor without any
+    ///     process-global UI state.
+    /// </summary>
+    private static void ShowInfoDialog()
+    {
+        ModernTheme theme = Globals.ActiveTheme.Name == InventorThemeConstants.LightTheme
+            ? ModernTheme.Light
+            : ModernTheme.Dark;
+
+        FontOptions font = FontOptions.FromInventor(
+            Globals.InvApp.GeneralOptions.TextAppearance,
+            Globals.InvApp.GeneralOptions.TextSize);
+
+        ModernWindow window = new(theme, font: font)
+        {
+            Title = "Info ExtrabbitCode.Inventor.Core.Template",
+            Icon = new BitmapImage(new Uri(
+                "pack://application:,,,/ExtrabbitCode.Inventor.Core.Template;component/Resources/appIcon.png")),
+            Content = new InfoView(),
+            Width = 800,
+            Height = 450,
+        };
+
+        // Own the dialog to Inventor's main window so it stays on top of Inventor.
+        _ = new WindowInteropHelper(window) { Owner = new IntPtr(Globals.InvApp.MainFrameHWND) };
+        window.ShowDialog();
+    }
+    //#endif
+
+    //#if (ui == "wpfui")
     private static void SetDialogTheme(Window dialog)
     {
         ApplicationTheme theme = Globals.ActiveTheme.Name == InventorThemeConstants.LightTheme
@@ -79,4 +122,5 @@ public class UiButton
         ApplicationThemeManager.Apply(dialog);
         ApplicationThemeManager.Apply(theme);
     }
+    //#endif
 }
