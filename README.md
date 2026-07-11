@@ -66,6 +66,11 @@ Feel free to ask for other features by emailing me <tobias.wiesendanger@gmail.co
 The template is setup for Inventor 2025 and higher. It uses the .net 8.0 or higher framework.
 By default the highest currently supported Inventor and .net version is used. You can change this in creation dialog.
 
+### Version 1.5.0
+
+- Button icons are now embedded directly into the produced assembly (as raw PNG resources) instead of being copied as loose files. This avoids `BinaryFormatter`, so it works on .NET 8 and .NET 10.
+- Removed the registration-free COM manifest. Modern Inventor (2025+) loads the add-in directly from the `<ClassId>` in the `.addin` file, so it is no longer needed.
+
 ### Version 1.4.0
 
 - Added [ExtrabbitCode.Inventor.ModernUi](https://www.nuget.org/packages/ExtrabbitCode.Inventor.ModernUi/) ([docs](https://modernui.extrabbitcode.com/)) as a UI option and made it the **new default**. It is a tiny, conflict-free WPF styling library built specifically for Inventor add-ins. `wpfui` and `winforms` can still be selected.
@@ -93,7 +98,7 @@ The following options are currently possibel:
 The template is available as a nuget package. You can install it by running the following command in the terminal:
 
 ```powershell
-dotnet new install ExtrabbitCode.Inventor.Core.Template@1.4.0
+dotnet new install ExtrabbitCode.Inventor.Core.Template@1.5.0
 ```
 
 After this it should be available in the command line or as a selection when creating a new procect in visual studio.
