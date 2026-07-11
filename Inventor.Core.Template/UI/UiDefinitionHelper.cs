@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace ExtrabbitCode.Inventor.Core.Template.UI;
@@ -34,8 +36,6 @@ public static class UiDefinitionHelper
                 "Each add-in must have a unique internal name.");
         }
 
-        iconFolder = GetIconFolder(iconFolder);
-
         (IPictureDisp? iPicDisp16X16, IPictureDisp? iPicDisp32X32) = GetButtonIcons(iconFolder, theme);
 
         try
@@ -60,80 +60,55 @@ public static class UiDefinitionHelper
         }
     }
 
-    public static string GetIconFolder(string iconFolder)
-    {
-        if (string.IsNullOrEmpty(iconFolder))
-        {
-            return iconFolder;
-        }
-
-        if (!System.IO.Directory.Exists(iconFolder))
-        {
-            string? dllPath =
-                System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-            iconFolder = System.IO.Path.Combine(dllPath ?? throw new InvalidOperationException(),
-                iconFolder);
-        }
-
-        return iconFolder;
-    }
-
     public static (IPictureDisp? iPicDisp16X16, IPictureDisp? iPicDisp32X32) GetButtonIcons(string iconFolder, string theme)
     {
-        IPictureDisp? iPicDisp16X16 = null;
-        IPictureDisp? iPicDisp32X32 = null;
-        if (string.IsNullOrEmpty(iconFolder) || !System.IO.Directory.Exists(iconFolder))
-        {
-            return (null, null);
-        }
-
-        string filename16X16 = System.IO.Path.Combine(iconFolder, $"16x16{theme}.png");
-        string filename32X32 = System.IO.Path.Combine(iconFolder, $"32x32{theme}.png");
-
-        if (System.IO.File.Exists(filename16X16))
-        {
-            try
-            {
-                using System.Drawing.Bitmap image16X16 = new(filename16X16);
-                iPicDisp16X16 = ConvertImage.ConvertImageToIPictureDisp(image16X16);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException(
-                    $@"Unable to load the 16x16.png image from ""{iconFolder}"". No small icon will be used.",
-                    ex);
-            }
-        }
-        else
-        {
-            MessageBox.Show(
-                @"The icon for the small button does not exist: """ + filename16X16 + @"""." +
-                System.Environment.NewLine + @"No small icon will be used.", @"Error Loading Icon");
-        }
-
-        if (System.IO.File.Exists(filename32X32))
-        {
-            try
-            {
-                using System.Drawing.Bitmap image32X32 = new(filename32X32);
-                iPicDisp32X32 = ConvertImage.ConvertImageToIPictureDisp(image32X32);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException(
-                    $@"Unable to load the 32x32.png image from ""{iconFolder}"". No large icon will be used.",
-                    ex);
-            }
-        }
-        else
-        {
-            MessageBox.Show(
-                @"The icon for the large button does not exist: """ + filename32X32 + @"""." +
-                System.Environment.NewLine + @"No large icon will be used.", @"Error Loading Icon");
-        }
-
+        IPictureDisp? iPicDisp16X16 = LoadEmbeddedIcon(iconFolder, "16x16", theme);
+        IPictureDisp? iPicDisp32X32 = LoadEmbeddedIcon(iconFolder, "32x32", theme);
         return (iPicDisp16X16, iPicDisp32X32);
+    }
+
+    /// <summary>
+    ///     Loads a button icon that is embedded in the assembly as a raw PNG resource and converts it
+    ///     into the <see cref="IPictureDisp" /> that the Inventor API requires.
+    /// </summary>
+    /// <remarks>
+    ///     The PNG bytes are read straight from the manifest resource stream, so there is no
+    ///     <c>BinaryFormatter</c>-based resource deserialization involved (unlike storing a typed
+    ///     <see cref="System.Drawing.Bitmap" /> in a .resx). That keeps icon loading working on both
+    ///     .NET 8 and .NET 10, where <c>BinaryFormatter</c> has been removed. Resources are matched by
+    ///     name suffix, so the exact root namespace of the assembly does not matter.
+    /// </remarks>
+    private static IPictureDisp? LoadEmbeddedIcon(string iconFolder, string size, string theme)
+    {
+        if (string.IsNullOrWhiteSpace(iconFolder))
+        {
+            return null;
+        }
+
+        // e.g. "UI\ButtonResources\Info" + "16x16" + "DarkTheme" -> "UI.ButtonResources.Info.16x16DarkTheme.png"
+        string suffix = iconFolder.Replace('\\', '.').Replace('/', '.').Trim('.') + $".{size}{theme}.png";
+
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        string? resourceName = Array.Find(
+            assembly.GetManifestResourceNames(),
+            name => name.EndsWith(suffix, StringComparison.OrdinalIgnoreCase));
+
+        if (resourceName is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
+            using System.Drawing.Bitmap bitmap = new(stream);
+            return ConvertImage.ConvertImageToIPictureDisp(bitmap);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $@"Unable to load the embedded button icon ""{resourceName}"".", ex);
+        }
     }
 
     public static RibbonTab SetupTab(string displayName, string internalName, Ribbon? invRibbon)

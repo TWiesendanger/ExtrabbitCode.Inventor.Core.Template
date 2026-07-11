@@ -66,30 +66,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="UI\ButtonResources\DefaultButton\16x16DarkTheme.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="UI\ButtonResources\DefaultButton\16x16LightTheme.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="UI\ButtonResources\DefaultButton\32x32DarkTheme.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="UI\ButtonResources\DefaultButton\32x32LightTheme.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="UI\ButtonResources\Info\16x16DarkTheme.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="UI\ButtonResources\Info\16x16LightTheme.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="UI\ButtonResources\Info\32x32DarkTheme.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Update="UI\ButtonResources\Info\32x32LightTheme.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+		<!-- Button icons are embedded into the assembly as raw PNG bytes and read back at runtime
+		     via Assembly.GetManifestResourceStream (see UiDefinitionHelper.LoadEmbeddedIcon).
+		     Raw streams avoid BinaryFormatter-based resource deserialization, which is disabled on
+		     .NET 8 and removed on .NET 10, so this works on every supported target. -->
+		<None Remove="UI\ButtonResources\**\*.png" />
+		<EmbeddedResource Include="UI\ButtonResources\**\*.png" />
 	</ItemGroup>
 
 	<Target Name="CustomBuild" AfterTargets="Build">
